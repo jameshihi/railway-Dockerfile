@@ -1,4 +1,6 @@
 # Build openclaw from source to avoid npm packaging gaps (some dist files are not shipped).
+FROM oven/bun:1.4.3 AS bun-binary
+
 FROM node:26-bookworm AS openclaw-build
 
 # Dependencies needed for openclaw build
@@ -7,18 +9,13 @@ RUN apt-get update \
     git \
     ca-certificates \
     curl \
-    unzip \
     python3 \
     make \
     g++ \
   && rm -rf /var/lib/apt/lists/*
 
-
-# Install Bun without the remote installer script
-RUN npm install -g bun@1.4.4 \
-    && bun --version
-
-
+  COPY --from=bun-binary /usr/local/bin/bun /usr/local/bin/bun
+RUN bun --version
 
 WORKDIR /openclaw
 
