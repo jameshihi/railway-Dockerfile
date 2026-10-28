@@ -7,6 +7,7 @@ RUN apt-get update \
     git \
     ca-certificates \
     curl \
+    unzip \
     python3 \
     make \
     g++ \
