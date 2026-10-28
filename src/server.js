@@ -1331,23 +1331,47 @@ proxy.on("error", (err, _req, res) => {
 // --- Dashboard password protection ---
 // Require the same SETUP_PASSWORD for the entire Control UI dashboard,
 // not just the /setup routes.  Healthcheck is excluded so Railway probes work.
+// --- Setup password protection ---
+// Only protect /setup routes with SETUP_PASSWORD.
+// OpenClaw Control UI uses its own Gateway token + device pairing.
 function requireDashboardAuth(req, res, next) {
-  if (req.path === "/healthz" || req.path === "/setup/healthz") return next();
-  if (req.path.startsWith("/hooks")) return next(); // allow OpenClaw webhook endpoints to bypass dashboard auth
-  if (!SETUP_PASSWORD) return next(); // no password configured → open
+  // Health checks do not require authentication
+  if (req.path === "/healthz" || req.path === "/setup/healthz") {
+    return next();
+  }
+
+  // OpenClaw hooks bypass setup authentication
+  if (req.path.startsWith("/hooks")) {
+    return next();
+  }
+
+  // Everything outside /setup is handled by OpenClaw's own authentication
+  if (!req.path.startsWith("/setup")) {
+    return next();
+  }
+
+  // If no setup password is configured, allow access
+  if (!SETUP_PASSWORD) {
+    return next();
+  }
+
   const header = req.headers.authorization || "";
   const [scheme, encoded] = header.split(" ");
+
   if (scheme !== "Basic" || !encoded) {
-    res.set("WWW-Authenticate", 'Basic realm="OpenClaw Dashboard"');
+    res.set("WWW-Authenticate", 'Basic realm="OpenClaw Setup"');
     return res.status(401).send("Auth required");
   }
+
   const decoded = Buffer.from(encoded, "base64").toString("utf8");
   const idx = decoded.indexOf(":");
   const password = idx >= 0 ? decoded.slice(idx + 1) : "";
+
   if (password !== SETUP_PASSWORD) {
-    res.set("WWW-Authenticate", 'Basic realm="OpenClaw Dashboard"');
+    res.set("WWW-Authenticate", 'Basic realm="OpenClaw Setup"');
     return res.status(401).send("Invalid password");
   }
+
   return next();
 }
 
