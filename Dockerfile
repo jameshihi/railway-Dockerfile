@@ -16,7 +16,7 @@ RUN apt-get update \
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
 
-RUN corepack enable
+
 
 WORKDIR /openclaw
 
@@ -24,6 +24,11 @@ WORKDIR /openclaw
 # Using a released tag avoids build breakage when `main` temporarily references unpublished packages.
 ARG OPENCLAW_GIT_REF=v2026.9.5
 RUN git clone --depth 1 --branch "${OPENCLAW_GIT_REF}" https://github.com/openclaw/openclaw.git .
+
+# Install the exact pnpm version required by this OpenClaw release
+RUN PNPM_SPEC="$(node -p "require('./package.json').packageManager.split('+')[0]")" \
+    && npm install -g "$PNPM_SPEC" \
+    && pnpm --version
 
 # Patch: relax version requirements for packages that may reference unpublished versions.
 # Apply to all extension package.json files to handle workspace protocol (workspace:*).
@@ -40,7 +45,7 @@ RUN pnpm ui:install && pnpm ui:build
 
 
 # Runtime image
-FROM node:22-bookworm
+FROM node:26-bookworm
 ENV NODE_ENV=production
 
 RUN apt-get update \
