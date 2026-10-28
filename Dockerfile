@@ -13,9 +13,10 @@ RUN apt-get update \
     g++ \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Bun (openclaw build uses it)
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
+
+# Install Bun without the remote installer script
+RUN npm install -g bun@1.4.4 \
+    && bun --version
 
 
 
