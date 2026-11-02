@@ -1,5 +1,6 @@
 # Use the official prebuilt OpenClaw runtime image.
 # This avoids rebuilding OpenClaw from source on every Railway deploy.
+# Railway auto-deploy trigger: use latest main source revision.
 FROM ghcr.io/openclaw/openclaw:2026.9.35
 
 # Keep the current Railway deployment permission model for compatibility with
