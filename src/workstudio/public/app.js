@@ -89,11 +89,22 @@ function activityByAgent(sessions) {
   return result;
 }
 
+function registryAgent(agentId) {
+  return registry.agents?.[agentId] || {};
+}
+
+function teamIdForAgent(agent) {
+  return agent.team || registryAgent(agent.agentId).team || "unassigned";
+}
+
 function teamLabel(agent) {
-  if (agent.team) return agent.team;
-  const teamId = registry.agents?.[agent.agentId]?.team;
-  if (!teamId) return "未設定";
+  const teamId = teamIdForAgent(agent);
+  if (teamId === "unassigned") return "未設定";
   return registry.teams?.[teamId]?.name || teamId;
+}
+
+function agentRole(agent) {
+  return registryAgent(agent.agentId).role || "member";
 }
 
 function renderRows(container, rows, emptyText) {
@@ -122,6 +133,147 @@ function renderRows(container, rows, emptyText) {
   }
 }
 
+function createAgentCard(agent, activities, isCoordinator = false) {
+  const agentActivity = activities.get(agent.agentId) || { interaction: [], automation: [] };
+  const lastInteractionAt = latestSessionTime(agentActivity.interaction);
+  const lastAutomationAt = latestSessionTime(agentActivity.automation);
+
+  const item = document.createElement("div");
+  item.className = `agent-overview agent-${agent.status || "idle"}${isCoordinator ? " agent-coordinator" : ""}`;
+  item.tabIndex = 0;
+
+  const main = document.createElement("div");
+  main.className = "agent-main";
+
+  const identity = document.createElement("div");
+  identity.className = "agent-identity";
+
+  const titleLine = document.createElement("div");
+  titleLine.className = "agent-title-line";
+
+  const title = document.createElement("strong");
+  title.className = "agent-name";
+  title.textContent = agent.name || agent.agentId || "未知";
+  titleLine.appendChild(title);
+
+  if (isCoordinator) {
+    const role = document.createElement("span");
+    role.className = "role-chip";
+    role.textContent = "主控 Agent";
+    titleLine.appendChild(role);
+  }
+
+  const id = document.createElement("span");
+  id.className = "agent-id";
+  id.textContent = agent.agentId || "未知";
+
+  identity.append(titleLine, id);
+
+  const status = document.createElement("span");
+  status.className = `agent-status status-${agent.status || "idle"}`;
+  status.textContent = agentStatusLabel(agent.status);
+
+  main.append(identity, status);
+
+  const quick = document.createElement("div");
+  quick.className = "agent-quick";
+
+  const team = document.createElement("span");
+  team.className = "agent-team";
+  team.textContent = isCoordinator ? "團隊主控" : "團隊成員";
+
+  const activity = document.createElement("span");
+  activity.className = "agent-activity";
+  activity.textContent = lastInteractionAt ? `最近互動 ${formatTime(lastInteractionAt)}` : "尚無互動";
+
+  quick.append(team, activity);
+
+  const meta = document.createElement("div");
+  meta.className = "agent-meta";
+
+  const metaItems = [
+    ["模型", agent.model || "未提供"],
+    ["工作區", agent.workspace || "未提供"],
+    ["執行環境", agent.runtime || "未提供"],
+    ["團隊", teamLabel(agent)],
+    ["綁定數", agent.bindings ?? "未提供"],
+    ["最後互動", formatTime(lastInteractionAt)],
+    ["最後自動化", formatTime(lastAutomationAt)],
+    ["工作階段", `${agentActivity.interaction.length} 個互動 / ${agentActivity.automation.length} 個自動化`],
+  ];
+
+  for (const [label, value] of metaItems) {
+    const cell = document.createElement("div");
+    cell.className = "agent-meta-item";
+
+    const key = document.createElement("span");
+    key.className = "agent-meta-label";
+    key.textContent = label;
+
+    const text = document.createElement("span");
+    text.className = "agent-meta-value";
+    text.textContent = String(value);
+
+    cell.append(key, text);
+    meta.appendChild(cell);
+  }
+
+  item.append(main, quick, meta);
+  return item;
+}
+
+function renderTeamSection(teamId, teamName, agents, activities) {
+  const section = document.createElement("section");
+  section.className = "team-section";
+
+  const header = document.createElement("div");
+  header.className = "team-header";
+
+  const heading = document.createElement("div");
+  const kicker = document.createElement("span");
+  kicker.className = "team-kicker";
+  kicker.textContent = "TEAM";
+
+  const title = document.createElement("h3");
+  title.textContent = teamName;
+  heading.append(kicker, title);
+
+  const state = document.createElement("span");
+  state.className = "team-count";
+  state.textContent = `${agents.length} 位 Agent`;
+  header.append(heading, state);
+
+  const coordinator = agents.find((agent) => agentRole(agent) === "coordinator") || null;
+  const members = agents.filter((agent) => agent !== coordinator);
+
+  const coordinatorArea = document.createElement("div");
+  coordinatorArea.className = "team-coordinator-area";
+
+  if (coordinator) {
+    const label = document.createElement("div");
+    label.className = "team-subtitle";
+    label.textContent = "主控 Agent";
+    coordinatorArea.append(label, createAgentCard(coordinator, activities, true));
+  }
+
+  const memberArea = document.createElement("div");
+  memberArea.className = "team-members-area";
+
+  if (members.length) {
+    const label = document.createElement("div");
+    label.className = "team-subtitle";
+    label.textContent = "團隊成員";
+
+    const grid = document.createElement("div");
+    grid.className = "team-member-grid";
+    for (const member of members) grid.appendChild(createAgentCard(member, activities, false));
+    memberArea.append(label, grid);
+  }
+
+  section.append(header, coordinatorArea, memberArea);
+  return section;
+}
+
 function renderAgents(agents, sessions = []) {
   agentListEl.replaceChildren();
 
@@ -134,83 +286,24 @@ function renderAgents(agents, sessions = []) {
   }
 
   const activities = activityByAgent(sessions);
+  const groups = new Map();
 
   for (const agent of agents) {
-    const agentActivity = activities.get(agent.agentId) || { interaction: [], automation: [] };
-    const lastInteractionAt = latestSessionTime(agentActivity.interaction);
-    const lastAutomationAt = latestSessionTime(agentActivity.automation);
+    const teamId = teamIdForAgent(agent);
+    const rows = groups.get(teamId) || [];
+    rows.push(agent);
+    groups.set(teamId, rows);
+  }
 
-    const item = document.createElement("div");
-    item.className = `agent-overview agent-${agent.status || "idle"}`;
-    item.tabIndex = 0;
+  const orderedTeamIds = [
+    ...Object.keys(registry.teams || {}).filter((teamId) => groups.has(teamId)),
+    ...[...groups.keys()].filter((teamId) => !registry.teams?.[teamId]),
+  ];
 
-    const main = document.createElement("div");
-    main.className = "agent-main";
-
-    const identity = document.createElement("div");
-    identity.className = "agent-identity";
-
-    const title = document.createElement("strong");
-    title.className = "agent-name";
-    title.textContent = agent.name || agent.agentId || "未知";
-
-    const id = document.createElement("span");
-    id.className = "agent-id";
-    id.textContent = agent.agentId || "未知";
-
-    identity.append(title, id);
-
-    const status = document.createElement("span");
-    status.className = `agent-status status-${agent.status || "idle"}`;
-    status.textContent = agentStatusLabel(agent.status);
-
-    main.append(identity, status);
-
-    const quick = document.createElement("div");
-    quick.className = "agent-quick";
-
-    const team = document.createElement("span");
-    team.className = "agent-team";
-    team.textContent = teamLabel(agent);
-
-    const activity = document.createElement("span");
-    activity.className = "agent-activity";
-    activity.textContent = lastInteractionAt ? `最近互動 ${formatTime(lastInteractionAt)}` : "尚無互動";
-
-    quick.append(team, activity);
-
-    const meta = document.createElement("div");
-    meta.className = "agent-meta";
-
-    const metaItems = [
-      ["模型", agent.model || "未提供"],
-      ["工作區", agent.workspace || "未提供"],
-      ["執行環境", agent.runtime || "未提供"],
-      ["團隊", teamLabel(agent)],
-      ["綁定數", agent.bindings ?? "未提供"],
-      ["最後互動", formatTime(lastInteractionAt)],
-      ["最後自動化", formatTime(lastAutomationAt)],
-      ["工作階段", `${agentActivity.interaction.length} 個互動 / ${agentActivity.automation.length} 個自動化`],
-    ];
-
-    for (const [label, value] of metaItems) {
-      const cell = document.createElement("div");
-      cell.className = "agent-meta-item";
-
-      const key = document.createElement("span");
-      key.className = "agent-meta-label";
-      key.textContent = label;
-
-      const text = document.createElement("span");
-      text.className = "agent-meta-value";
-      text.textContent = String(value);
-
-      cell.append(key, text);
-      meta.appendChild(cell);
-    }
-
-    item.append(main, quick, meta);
-    agentListEl.appendChild(item);
+  for (const teamId of orderedTeamIds) {
+    const rows = groups.get(teamId) || [];
+    const teamName = teamId === "unassigned" ? "未分組" : registry.teams?.[teamId]?.name || teamId;
+    agentListEl.appendChild(renderTeamSection(teamId, teamName, rows, activities));
   }
 }
 
@@ -227,7 +320,7 @@ function renderGatewayState(data) {
   renderRows(sessionListEl, recentSessions, "目前沒有工作階段。");
 
   statusEl.textContent = data.connected && data.subscribed ? "已連線" : "連線中";
-  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · 協定 ${data.protocol ?? "-"} · 訂閱 ${data.subscribed ? "啟用" : "未啟用"} · Agent 清單 ${agents.length} · 工作階段 ${sessions.length}。互動與自動化活動已分開顯示；頁面關閉後訂閱會跟著釋放。`;
+  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · 協定 ${data.protocol ?? "-"} · 訂閱 ${data.subscribed ? "啟用" : "未啟用"} · Agent 清單 ${agents.length} · 工作階段 ${sessions.length}。Agent 已依團隊與主控角色分組；頁面關閉後訂閱會跟著釋放。`;
 }
 
 function renderError(message) {
