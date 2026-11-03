@@ -94,12 +94,17 @@ function renderAgents(agents) {
     const meta = document.createElement("div");
     meta.className = "agent-meta";
 
+    const sessionText = agent.activeSession || (agent.sessionCount ? `${agent.sessionCount} recorded` : "none");
+    const bindingsText = agent.bindings == null ? "未提供" : String(agent.bindings);
+
     const metaItems = [
       ["Model", agent.model || "未提供"],
+      ["Workspace", agent.workspace || "未提供"],
       ["Runtime", agent.runtime || "未提供"],
       ["Team", agent.team || "未設定"],
+      ["Bindings", bindingsText],
       ["Last activity", formatTime(agent.lastActivityAt)],
-      ["Session", agent.activeSession || (agent.sessionCount ? `${agent.sessionCount} recorded` : "none")],
+      ["Session", sessionText],
     ];
 
     for (const [label, value] of metaItems) {
@@ -136,7 +141,7 @@ function renderGatewayState(data) {
   renderRows(sessionListEl, recentSessions, "目前沒有 session。");
 
   statusEl.textContent = data.connected && data.subscribed ? "CONNECTED" : "CONNECTING";
-  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。資料由 Gateway 即時推送；頁面關閉後 subscription 會跟著釋放。`;
+  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。靜態 Agent 資料由本機 OpenClaw registry 補齊；活動狀態由 Gateway subscription 即時推送。頁面關閉後 subscription 會跟著釋放。`;
 }
 
 function renderError(message) {
