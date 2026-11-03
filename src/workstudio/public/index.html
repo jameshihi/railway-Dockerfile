@@ -3,33 +3,33 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Workstudio</title>
+  <title>AI 工作台</title>
   <link rel="stylesheet" href="/workstudio/style.css" />
 </head>
 <body>
   <main class="shell">
     <header class="topbar">
       <div>
-        <p class="eyebrow">AI TEAM OPERATING SYSTEM</p>
-        <h1>AI Workstudio</h1>
-        <p class="subtitle">Dashboard V1 · 真實狀態驗證</p>
+        <p class="eyebrow">AI 團隊作業系統</p>
+        <h1>AI 工作台</h1>
+        <p class="subtitle">儀表板 V1 · 真實狀態驗證</p>
       </div>
-      <div class="status-pill" id="systemStatus">LOADING</div>
+      <div class="status-pill" id="systemStatus">載入中</div>
     </header>
 
     <section class="grid">
       <article class="card hero-card">
         <div class="card-header">
-          <h2>Central Control</h2>
-          <span class="badge">on demand</span>
+          <h2>中央控制</h2>
+          <span class="badge">按需連線</span>
         </div>
-        <p id="snapshotSummary">正在讀取 OpenClaw session snapshot。此頁不使用 polling，也不呼叫 AI 模型。</p>
+        <p id="snapshotSummary">正在讀取 OpenClaw 工作階段快照。此頁不使用輪詢，也不呼叫 AI 模型。</p>
       </article>
 
       <article class="card">
         <div class="card-header">
-          <h2>Agent State</h2>
-          <span class="badge muted">registry-driven</span>
+          <h2>Agent 狀態</h2>
+          <span class="badge muted">Registry 驅動</span>
         </div>
         <div class="agent-list" id="agentList">
           <p class="empty">載入中…</p>
@@ -38,8 +38,8 @@
 
       <article class="card">
         <div class="card-header">
-          <h2>Recent Sessions</h2>
-          <span class="badge muted">snapshot</span>
+          <h2>最近工作階段</h2>
+          <span class="badge muted">狀態快照</span>
         </div>
         <div class="agent-list" id="sessionList">
           <p class="empty">載入中…</p>
