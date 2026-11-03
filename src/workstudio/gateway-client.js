@@ -1,9 +1,12 @@
 import crypto from "node:crypto";
+import { execFile } from "node:child_process";
 
 const GATEWAY_HOST = process.env.INTERNAL_GATEWAY_HOST ?? "127.0.0.1";
 const GATEWAY_PORT = Number.parseInt(process.env.INTERNAL_GATEWAY_PORT ?? "18789", 10);
 const GATEWAY_URL = `ws://${GATEWAY_HOST}:${GATEWAY_PORT}`;
 const GATEWAY_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN?.trim() || "";
+const OPENCLAW_ENTRY = process.env.OPENCLAW_ENTRY?.trim() || "/app/openclaw.mjs";
+const OPENCLAW_NODE = process.env.OPENCLAW_NODE?.trim() || "node";
 
 let socket = null;
 let connecting = null;
@@ -94,8 +97,57 @@ function extractAgentRoster(payload) {
   return [];
 }
 
+function mergeAgentRosters(gatewayRows, cliRows) {
+  const byId = new Map();
+
+  for (const entry of gatewayRows || []) {
+    const id = agentIdFromEntry(entry);
+    if (id) byId.set(id, { ...entry });
+  }
+
+  for (const entry of cliRows || []) {
+    const id = agentIdFromEntry(entry);
+    if (!id) continue;
+    byId.set(id, { ...(byId.get(id) || {}), ...entry });
+  }
+
+  return [...byId.values()];
+}
+
+function loadCliAgentRoster() {
+  return new Promise((resolve) => {
+    execFile(
+      OPENCLAW_NODE,
+      [OPENCLAW_ENTRY, "agents", "list", "--json"],
+      {
+        env: process.env,
+        timeout: 10_000,
+        maxBuffer: 2 * 1024 * 1024,
+      },
+      (error, stdout) => {
+        if (error) {
+          resolve([]);
+          return;
+        }
+
+        try {
+          const parsed = JSON.parse(stdout || "[]");
+          resolve(Array.isArray(parsed) ? parsed : extractAgentRoster(parsed));
+        } catch {
+          resolve([]);
+        }
+      },
+    );
+  });
+}
+
 function sessionAgentId(session) {
-  return session?.agentId || session?.owner || null;
+  const direct = session?.agentId || session?.owner || null;
+  if (direct && direct !== "unknown") return direct;
+
+  const key = session?.key || session?.id || "";
+  const match = /^agent:([^:]+):/.exec(String(key));
+  return match?.[1] || direct;
 }
 
 function sessionKey(session) {
@@ -189,11 +241,14 @@ export function buildAgentOverview(roster = agentRoster, sessionRows = sessions)
 
     overview.push({
       agentId,
-      name: entry?.name || entry?.identity?.name || agentId,
+      name: entry?.name || entry?.identityName || entry?.identity?.name || agentId,
       team: entry?.teamId || entry?.team?.id || null,
       status,
       model,
       runtime,
+      workspace: entry?.workspace || null,
+      agentDir: entry?.agentDir || null,
+      bindings: Number.isFinite(entry?.bindings) ? entry.bindings : null,
       kind: entry?.kind || null,
       isDefault: entry?.isDefault === true,
       lastActivityAt: latestTimestamp == null ? null : new Date(latestTimestamp).toISOString(),
@@ -205,6 +260,8 @@ export function buildAgentOverview(roster = agentRoster, sessionRows = sessions)
   return overview.sort((a, b) => {
     if (a.status === "working" && b.status !== "working") return -1;
     if (b.status === "working" && a.status !== "working") return 1;
+    if (a.isDefault && !b.isDefault) return -1;
+    if (b.isDefault && !a.isDefault) return 1;
     return a.agentId.localeCompare(b.agentId);
   });
 }
@@ -255,7 +312,9 @@ async function handleFrame(frame) {
 
       const rosterResponse = await sendRequest("agents.list", {});
       const rosterPayload = rosterResponse?.payload || rosterResponse || {};
-      agentRoster = extractAgentRoster(rosterPayload);
+      const gatewayRoster = extractAgentRoster(rosterPayload);
+      const cliRoster = await loadCliAgentRoster();
+      agentRoster = mergeAgentRosters(gatewayRoster, cliRoster);
 
       notifyStateListeners();
       return;
