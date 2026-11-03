@@ -1,0 +1,24 @@
+{
+  "teams": {
+    "main-work": {
+      "name": "Main Work Team"
+    },
+    "finance": {
+      "name": "Finance Team"
+    }
+  },
+  "agents": {
+    "main": { "team": "main-work" },
+    "designer": { "team": "main-work" },
+    "brand": { "team": "main-work" },
+    "copywriter": { "team": "main-work" },
+    "researcher": { "team": "main-work" },
+    "technical": { "team": "main-work" },
+    "critic": { "team": "main-work" },
+    "producer": { "team": "main-work" },
+    "market-scout": { "team": "main-work" },
+    "finance-main": { "team": "finance" },
+    "bookkeeper": { "team": "finance" },
+    "finance-auditor": { "team": "finance" }
+  }
+}
