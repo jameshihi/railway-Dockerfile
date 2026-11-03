@@ -8,17 +8,17 @@
     }
   },
   "agents": {
-    "main": { "team": "main-work" },
-    "designer": { "team": "main-work" },
-    "brand": { "team": "main-work" },
-    "copywriter": { "team": "main-work" },
-    "researcher": { "team": "main-work" },
-    "technical": { "team": "main-work" },
-    "critic": { "team": "main-work" },
-    "producer": { "team": "main-work" },
-    "market-scout": { "team": "main-work" },
-    "finance-main": { "team": "finance" },
-    "bookkeeper": { "team": "finance" },
-    "finance-auditor": { "team": "finance" }
+    "main": { "team": "main-work", "role": "coordinator" },
+    "designer": { "team": "main-work", "role": "member" },
+    "brand": { "team": "main-work", "role": "member" },
+    "copywriter": { "team": "main-work", "role": "member" },
+    "researcher": { "team": "main-work", "role": "member" },
+    "technical": { "team": "main-work", "role": "member" },
+    "critic": { "team": "main-work", "role": "member" },
+    "producer": { "team": "main-work", "role": "member" },
+    "market-scout": { "team": "main-work", "role": "member" },
+    "finance-main": { "team": "finance", "role": "coordinator" },
+    "bookkeeper": { "team": "finance", "role": "member" },
+    "finance-auditor": { "team": "finance", "role": "member" }
   }
 }
