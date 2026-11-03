@@ -6,6 +6,7 @@ const agentListEl = document.getElementById("agentList");
 const sessionListEl = document.getElementById("sessionList");
 
 let eventSource = null;
+let registry = { teams: {}, agents: {} };
 
 function sessionState(session) {
   if (session.hasActiveRun || session.running === true) return "working";
@@ -26,6 +27,13 @@ function formatTime(value) {
     minute: "2-digit",
     hour12: false,
   }).format(date);
+}
+
+function teamLabel(agent) {
+  if (agent.team) return agent.team;
+  const teamId = registry.agents?.[agent.agentId]?.team;
+  if (!teamId) return "未設定";
+  return registry.teams?.[teamId]?.name || teamId;
 }
 
 function renderRows(container, rows, emptyText) {
@@ -94,17 +102,14 @@ function renderAgents(agents) {
     const meta = document.createElement("div");
     meta.className = "agent-meta";
 
-    const sessionText = agent.activeSession || (agent.sessionCount ? `${agent.sessionCount} recorded` : "none");
-    const bindingsText = agent.bindings == null ? "未提供" : String(agent.bindings);
-
     const metaItems = [
       ["Model", agent.model || "未提供"],
       ["Workspace", agent.workspace || "未提供"],
       ["Runtime", agent.runtime || "未提供"],
-      ["Team", agent.team || "未設定"],
-      ["Bindings", bindingsText],
+      ["Team", teamLabel(agent)],
+      ["Bindings", agent.bindings ?? "未提供"],
       ["Last activity", formatTime(agent.lastActivityAt)],
-      ["Session", sessionText],
+      ["Session", agent.activeSession || (agent.sessionCount ? `${agent.sessionCount} recorded` : "none")],
     ];
 
     for (const [label, value] of metaItems) {
@@ -141,7 +146,7 @@ function renderGatewayState(data) {
   renderRows(sessionListEl, recentSessions, "目前沒有 session。");
 
   statusEl.textContent = data.connected && data.subscribed ? "CONNECTED" : "CONNECTING";
-  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。靜態 Agent 資料由本機 OpenClaw registry 補齊；活動狀態由 Gateway subscription 即時推送。頁面關閉後 subscription 會跟著釋放。`;
+  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。資料由 Gateway 即時推送；頁面關閉後 subscription 會跟著釋放。`;
 }
 
 function renderError(message) {
@@ -149,6 +154,20 @@ function renderError(message) {
   summaryEl.textContent = `無法讀取 Gateway subscription：${message || "unknown error"}`;
   renderAgents([]);
   renderRows(sessionListEl, [], "尚未取得 Session 資料。");
+}
+
+async function loadRegistry() {
+  try {
+    const response = await fetch("/workstudio/registry.json", { cache: "no-store" });
+    if (!response.ok) return;
+    const parsed = await response.json();
+    registry = {
+      teams: parsed?.teams && typeof parsed.teams === "object" ? parsed.teams : {},
+      agents: parsed?.agents && typeof parsed.agents === "object" ? parsed.agents : {},
+    };
+  } catch {
+    registry = { teams: {}, agents: {} };
+  }
 }
 
 function connectEventStream() {
@@ -193,4 +212,5 @@ function disconnectEventStream() {
 window.addEventListener("pagehide", disconnectEventStream);
 window.addEventListener("beforeunload", disconnectEventStream);
 
+await loadRegistry();
 connectEventStream();
