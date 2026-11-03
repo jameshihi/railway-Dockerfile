@@ -212,5 +212,4 @@ function disconnectEventStream() {
 window.addEventListener("pagehide", disconnectEventStream);
 window.addEventListener("beforeunload", disconnectEventStream);
 
-await loadRegistry();
-connectEventStream();
+loadRegistry().finally(connectEventStream);
