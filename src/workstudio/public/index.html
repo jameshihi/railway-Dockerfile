@@ -9,26 +9,38 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <div>
+      <div class="brand-block">
         <p class="eyebrow">AI 團隊作業系統</p>
-        <h1>AI 工作台</h1>
-        <p class="subtitle">儀表板 V1 · 真實狀態驗證</p>
+        <div class="title-row">
+          <h1>AI 工作台</h1>
+          <span class="version-chip">V1</span>
+        </div>
+        <p class="subtitle">Production 即時監控與團隊運作總覽</p>
       </div>
-      <div class="status-pill" id="systemStatus">載入中</div>
+      <div class="status-cluster">
+        <span class="status-label">系統狀態</span>
+        <div class="status-pill" id="systemStatus">載入中</div>
+      </div>
     </header>
 
     <section class="grid">
       <article class="card hero-card">
         <div class="card-header">
-          <h2>中央控制</h2>
+          <div>
+            <p class="section-kicker">系統概況</p>
+            <h2>中央控制</h2>
+          </div>
           <span class="badge">按需連線</span>
         </div>
         <p id="snapshotSummary">正在讀取 OpenClaw 工作階段快照。此頁不使用輪詢，也不呼叫 AI 模型。</p>
       </article>
 
-      <article class="card">
+      <article class="card card-primary">
         <div class="card-header">
-          <h2>Agent 狀態</h2>
+          <div>
+            <p class="section-kicker">團隊運作</p>
+            <h2>Agent 狀態</h2>
+          </div>
           <span class="badge muted">Registry 驅動</span>
         </div>
         <div class="agent-list" id="agentList">
@@ -36,10 +48,13 @@
         </div>
       </article>
 
-      <article class="card">
+      <article class="card card-secondary">
         <div class="card-header">
-          <h2>最近工作階段</h2>
-          <span class="badge muted">狀態快照</span>
+          <div>
+            <p class="section-kicker">活動紀錄</p>
+            <h2>最近工作階段</h2>
+          </div>
+          <span class="badge muted">即時快照</span>
         </div>
         <div class="agent-list" id="sessionList">
           <p class="empty">載入中…</p>
