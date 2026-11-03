@@ -142,6 +142,7 @@ function renderAgents(agents, sessions = []) {
 
     const item = document.createElement("div");
     item.className = `agent-overview agent-${agent.status || "idle"}`;
+    item.tabIndex = 0;
 
     const main = document.createElement("div");
     main.className = "agent-main";
@@ -164,6 +165,19 @@ function renderAgents(agents, sessions = []) {
     status.textContent = agentStatusLabel(agent.status);
 
     main.append(identity, status);
+
+    const quick = document.createElement("div");
+    quick.className = "agent-quick";
+
+    const team = document.createElement("span");
+    team.className = "agent-team";
+    team.textContent = teamLabel(agent);
+
+    const activity = document.createElement("span");
+    activity.className = "agent-activity";
+    activity.textContent = lastInteractionAt ? `最近互動 ${formatTime(lastInteractionAt)}` : "尚無互動";
+
+    quick.append(team, activity);
 
     const meta = document.createElement("div");
     meta.className = "agent-meta";
@@ -195,7 +209,7 @@ function renderAgents(agents, sessions = []) {
       meta.appendChild(cell);
     }
 
-    item.append(main, meta);
+    item.append(main, quick, meta);
     agentListEl.appendChild(item);
   }
 }
