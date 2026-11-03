@@ -2,6 +2,7 @@ document.documentElement.dataset.workstudio = "v1";
 
 const statusEl = document.getElementById("systemStatus");
 const summaryEl = document.getElementById("snapshotSummary");
+const teamOverviewSummaryEl = document.getElementById("teamOverviewSummary");
 const agentListEl = document.getElementById("agentList");
 const sessionListEl = document.getElementById("sessionList");
 
@@ -278,6 +279,7 @@ function renderAgents(agents, sessions = []) {
   agentListEl.replaceChildren();
 
   if (!agents.length) {
+    if (teamOverviewSummaryEl) teamOverviewSummaryEl.textContent = "目前尚未取得團隊與 Agent 資料。";
     const p = document.createElement("p");
     p.className = "empty";
     p.textContent = "Gateway 沒有回傳 Agent 清單。";
@@ -299,6 +301,10 @@ function renderAgents(agents, sessions = []) {
     ...Object.keys(registry.teams || {}).filter((teamId) => groups.has(teamId)),
     ...[...groups.keys()].filter((teamId) => !registry.teams?.[teamId]),
   ];
+
+  if (teamOverviewSummaryEl) {
+    teamOverviewSummaryEl.textContent = `目前共有 ${orderedTeamIds.length} 組團隊，包含 ${agents.length} 位 Agent 成員。`;
+  }
 
   for (const teamId of orderedTeamIds) {
     const rows = groups.get(teamId) || [];
@@ -326,6 +332,7 @@ function renderGatewayState(data) {
 function renderError(message) {
   statusEl.textContent = "錯誤";
   summaryEl.textContent = `無法讀取 Gateway 訂閱：${message || "未知錯誤"}`;
+  if (teamOverviewSummaryEl) teamOverviewSummaryEl.textContent = "團隊資料暫時無法讀取。";
   renderAgents([]);
   renderRows(sessionListEl, [], "尚未取得工作階段資料。");
 }
