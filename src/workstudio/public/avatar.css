@@ -1,0 +1,42 @@
+/* Default Agent avatar layer. Future per-agent avatars can override --agent-avatar. */
+.agent-overview {
+  --agent-avatar: url('/workstudio/assets/default-agent.png.png');
+}
+
+.agent-main::before,
+.agent-coordinator .agent-main::before,
+.team-member-grid .agent-main::before {
+  content: "";
+  background-image:
+    radial-gradient(circle at center, rgba(37,224,210,.05), rgba(2,18,19,.16) 72%),
+    var(--agent-avatar);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: transparent;
+  text-shadow: none;
+  overflow: hidden;
+}
+
+.agent-coordinator .agent-main::before {
+  background-size: cover;
+  background-position: center;
+}
+
+.team-member-grid .agent-main::before {
+  background-size: cover;
+  background-position: center;
+  filter: brightness(.88) saturate(.92);
+}
+
+.agent-overview:hover .agent-main::before,
+.agent-overview:focus .agent-main::before,
+.agent-overview:focus-within .agent-main::before {
+  filter: brightness(1.08) saturate(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-main::before {
+    animation: none;
+  }
+}
