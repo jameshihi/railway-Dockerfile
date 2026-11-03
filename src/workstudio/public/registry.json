@@ -1,10 +1,10 @@
 {
   "teams": {
     "main-work": {
-      "name": "Main Work Team"
+      "name": "設計行銷團隊"
     },
     "finance": {
-      "name": "Finance Team"
+      "name": "娃娃機財務團隊"
     }
   },
   "agents": {
