@@ -29,6 +29,59 @@ function formatTime(value) {
   }).format(date);
 }
 
+function sessionTimestamp(session) {
+  for (const value of [
+    session?.lastInteractionAt,
+    session?.lastActivityAt,
+    session?.updatedAt,
+    session?.lastMessageAt,
+    session?.createdAt,
+  ]) {
+    if (value == null) continue;
+    const timestamp = typeof value === "number" ? value : Date.parse(value);
+    if (Number.isFinite(timestamp)) return timestamp;
+  }
+  return null;
+}
+
+function sessionAgentId(session) {
+  const direct = session?.agentId || session?.owner || null;
+  if (direct && direct !== "unknown") return direct;
+  const key = String(session?.key || session?.id || "");
+  return /^agent:([^:]+):/.exec(key)?.[1] || direct;
+}
+
+function isAutomationSession(session) {
+  if (String(session?.kind || "").toLowerCase() === "cron") return true;
+  const key = String(session?.key || "");
+  return key.includes(":cron:");
+}
+
+function latestSessionTime(rows) {
+  let latest = null;
+  for (const row of rows) {
+    const timestamp = sessionTimestamp(row);
+    if (timestamp == null) continue;
+    if (latest == null || timestamp > latest) latest = timestamp;
+  }
+  return latest == null ? null : new Date(latest).toISOString();
+}
+
+function activityByAgent(sessions) {
+  const result = new Map();
+
+  for (const session of sessions) {
+    const agentId = sessionAgentId(session);
+    if (!agentId) continue;
+    const current = result.get(agentId) || { interaction: [], automation: [] };
+    if (isAutomationSession(session)) current.automation.push(session);
+    else current.interaction.push(session);
+    result.set(agentId, current);
+  }
+
+  return result;
+}
+
 function teamLabel(agent) {
   if (agent.team) return agent.team;
   const teamId = registry.agents?.[agent.agentId]?.team;
@@ -62,7 +115,7 @@ function renderRows(container, rows, emptyText) {
   }
 }
 
-function renderAgents(agents) {
+function renderAgents(agents, sessions = []) {
   agentListEl.replaceChildren();
 
   if (!agents.length) {
@@ -73,7 +126,13 @@ function renderAgents(agents) {
     return;
   }
 
+  const activities = activityByAgent(sessions);
+
   for (const agent of agents) {
+    const agentActivity = activities.get(agent.agentId) || { interaction: [], automation: [] };
+    const lastInteractionAt = latestSessionTime(agentActivity.interaction);
+    const lastAutomationAt = latestSessionTime(agentActivity.automation);
+
     const item = document.createElement("div");
     item.className = `agent-overview agent-${agent.status || "idle"}`;
 
@@ -108,8 +167,9 @@ function renderAgents(agents) {
       ["Runtime", agent.runtime || "未提供"],
       ["Team", teamLabel(agent)],
       ["Bindings", agent.bindings ?? "未提供"],
-      ["Last activity", formatTime(agent.lastActivityAt)],
-      ["Session", agent.activeSession || (agent.sessionCount ? `${agent.sessionCount} recorded` : "none")],
+      ["Last interaction", formatTime(lastInteractionAt)],
+      ["Last automation", formatTime(lastAutomationAt)],
+      ["Sessions", `${agentActivity.interaction.length} interaction / ${agentActivity.automation.length} automation`],
     ];
 
     for (const [label, value] of metaItems) {
@@ -138,15 +198,15 @@ function renderGatewayState(data) {
   const sessions = Array.isArray(data.sessions) ? data.sessions : [];
 
   const recentSessions = sessions.slice(0, 12).map((session) => ({
-    label: session.key || session.id || session.agentId || session.owner || "session",
-    state: sessionState(session),
+    label: session.label || session.key || session.id || session.agentId || session.owner || "session",
+    state: `${isAutomationSession(session) ? "AUTOMATION" : "INTERACTION"} · ${sessionState(session).toUpperCase()}`,
   }));
 
-  renderAgents(agents);
+  renderAgents(agents, sessions);
   renderRows(sessionListEl, recentSessions, "目前沒有 session。");
 
   statusEl.textContent = data.connected && data.subscribed ? "CONNECTED" : "CONNECTING";
-  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。資料由 Gateway 即時推送；頁面關閉後 subscription 會跟著釋放。`;
+  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。互動與 Automation 活動已分開顯示；頁面關閉後 subscription 會跟著釋放。`;
 }
 
 function renderError(message) {
