@@ -1,0 +1,251 @@
+/* HUD-style Agent cards: visual-only layer, no runtime/data changes. */
+
+.agent-overview {
+  isolation: isolate;
+}
+
+.agent-main {
+  position: relative;
+  min-height: 46px;
+  padding-left: 58px;
+  align-items: center;
+}
+
+.agent-main::before {
+  content: "AI";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(117,245,235,.58);
+  border-radius: 50%;
+  color: rgba(167,255,248,.92);
+  font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: .08em;
+  background:
+    radial-gradient(circle at center, rgba(37,224,210,.20) 0 15%, transparent 17% 31%, rgba(37,224,210,.16) 33% 35%, transparent 37%),
+    repeating-conic-gradient(from 0deg, rgba(37,224,210,.72) 0 7deg, transparent 7deg 24deg),
+    rgba(2,18,19,.98);
+  box-shadow:
+    0 0 0 5px rgba(37,224,210,.035),
+    0 0 16px rgba(37,224,210,.14),
+    inset 0 0 18px rgba(37,224,210,.12);
+  animation: hudCorePulse 3.4s ease-in-out infinite;
+}
+
+.agent-main::after {
+  content: "";
+  position: absolute;
+  left: 48px;
+  top: 50%;
+  width: 7px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(37,224,210,.75), transparent);
+}
+
+.agent-identity {
+  position: relative;
+  padding-left: 2px;
+}
+
+.agent-identity::after {
+  content: "";
+  width: 54px;
+  height: 3px;
+  display: block;
+  margin-top: 5px;
+  background: repeating-linear-gradient(90deg, rgba(37,224,210,.52) 0 5px, transparent 5px 8px);
+  opacity: .48;
+}
+
+.agent-status {
+  position: relative;
+  padding-left: 16px;
+}
+
+.agent-status::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.agent-quick {
+  position: relative;
+  margin-left: 58px;
+  padding: 8px 10px 0;
+}
+
+.agent-quick::before,
+.agent-quick::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 5px;
+  width: 1px;
+  background: rgba(37,224,210,.34);
+}
+
+.agent-quick::before { left: 0; }
+.agent-quick::after { right: 0; }
+
+/* Coordinator = large portrait-style module */
+.agent-coordinator {
+  width: min(100%, 720px);
+  min-height: 176px;
+  padding: 18px 18px 16px 170px;
+  overflow: visible;
+}
+
+.agent-coordinator .agent-main {
+  min-height: 78px;
+  padding-left: 0;
+}
+
+.agent-coordinator .agent-main::before {
+  content: "AI\A CORE";
+  white-space: pre;
+  left: -148px;
+  width: 120px;
+  height: 120px;
+  font-size: 12px;
+  line-height: 1.45;
+  background:
+    radial-gradient(circle at center, rgba(37,224,210,.22) 0 9%, transparent 10% 22%, rgba(37,224,210,.12) 23% 24%, transparent 25% 38%, rgba(37,224,210,.11) 39% 40%, transparent 41%),
+    repeating-conic-gradient(from 0deg, rgba(37,224,210,.82) 0 5deg, transparent 5deg 17deg),
+    radial-gradient(circle at 50% 44%, rgba(116,255,246,.22), rgba(2,18,19,.98) 64%);
+  border-color: rgba(117,245,235,.78);
+  box-shadow:
+    0 0 0 8px rgba(37,224,210,.035),
+    0 0 0 11px rgba(37,224,210,.06),
+    0 0 34px rgba(37,224,210,.17),
+    inset 0 0 28px rgba(37,224,210,.16);
+}
+
+.agent-coordinator .agent-main::after {
+  left: -20px;
+  width: 20px;
+}
+
+.agent-coordinator .agent-name {
+  font-size: 22px;
+  letter-spacing: -.02em;
+  text-shadow: 0 0 12px rgba(117,245,235,.10);
+}
+
+.agent-coordinator .agent-id {
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+.agent-coordinator .agent-identity::after {
+  width: 92px;
+  opacity: .72;
+}
+
+.agent-coordinator .agent-quick {
+  margin-left: 0;
+  border: 1px solid rgba(37,224,210,.15);
+  border-left-color: rgba(117,245,235,.36);
+  border-right-color: rgba(117,245,235,.36);
+  padding: 9px 10px;
+  background: linear-gradient(90deg, rgba(37,224,210,.055), transparent 46%, rgba(37,224,210,.025));
+}
+
+.agent-coordinator .agent-meta {
+  margin-left: 0;
+}
+
+.agent-coordinator:hover .agent-meta,
+.agent-coordinator:focus .agent-meta,
+.agent-coordinator:focus-within .agent-meta {
+  max-height: 360px;
+}
+
+/* Compact member cards keep the same visual grammar at smaller scale. */
+.team-member-grid .agent-main {
+  min-height: 38px;
+  padding-left: 47px;
+}
+
+.team-member-grid .agent-main::before {
+  width: 34px;
+  height: 34px;
+  font-size: 8px;
+  opacity: .82;
+}
+
+.team-member-grid .agent-main::after {
+  left: 39px;
+  width: 6px;
+}
+
+.team-member-grid .agent-quick {
+  margin-left: 47px;
+}
+
+.team-member-grid .agent-identity::after {
+  width: 35px;
+  height: 2px;
+}
+
+.agent-overview:hover .agent-main::before,
+.agent-overview:focus .agent-main::before,
+.agent-overview:focus-within .agent-main::before {
+  border-color: rgba(117,245,235,.95);
+  box-shadow:
+    0 0 0 5px rgba(37,224,210,.05),
+    0 0 24px rgba(37,224,210,.25),
+    inset 0 0 20px rgba(37,224,210,.16);
+}
+
+@keyframes hudCorePulse {
+  0%, 100% { filter: brightness(.88); }
+  50% { filter: brightness(1.18); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-main::before { animation: none; }
+}
+
+@media (max-width: 760px) {
+  .agent-coordinator {
+    padding: 148px 14px 14px;
+  }
+
+  .agent-coordinator .agent-main::before {
+    left: 50%;
+    top: -126px;
+    transform: translateX(-50%);
+    width: 108px;
+    height: 108px;
+  }
+
+  .agent-coordinator .agent-main::after {
+    display: none;
+  }
+
+  .agent-coordinator .agent-main {
+    min-height: auto;
+  }
+
+  .agent-main,
+  .team-member-grid .agent-main {
+    padding-left: 47px;
+  }
+
+  .agent-quick,
+  .team-member-grid .agent-quick {
+    margin-left: 47px;
+  }
+}
