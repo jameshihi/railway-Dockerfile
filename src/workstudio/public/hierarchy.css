@@ -1,0 +1,213 @@
+.agent-list {
+  gap: 24px;
+}
+
+.team-section {
+  position: relative;
+  padding: 18px 18px 20px;
+  border: 1px solid rgba(37, 224, 210, .28);
+  background:
+    linear-gradient(180deg, rgba(7, 25, 26, .72), rgba(1, 8, 9, .62));
+  box-shadow: inset 0 0 44px rgba(37, 224, 210, .018);
+}
+
+.team-section + .team-section {
+  margin-top: 4px;
+}
+
+.team-header {
+  margin: -18px -18px 20px;
+  padding: 15px 18px 14px;
+  background: rgba(9, 35, 35, .72);
+  border-bottom: 1px solid rgba(37, 224, 210, .30);
+}
+
+.team-header h3 {
+  font-size: 18px;
+  color: #eafffc;
+  letter-spacing: .01em;
+}
+
+.team-kicker {
+  color: var(--accent);
+  font-size: 9px;
+}
+
+.team-count {
+  padding: 4px 8px;
+  border: 1px solid rgba(37, 224, 210, .22);
+  background: rgba(0, 0, 0, .22);
+}
+
+.team-coordinator-area {
+  position: relative;
+  margin: 0 0 26px;
+  padding: 0 0 26px;
+}
+
+.team-coordinator-area::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(180deg, var(--accent), rgba(37, 224, 210, .18));
+  box-shadow: 0 0 8px rgba(37, 224, 210, .35);
+}
+
+.team-coordinator-area .team-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  color: var(--accent-soft);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.team-coordinator-area .team-subtitle::before {
+  content: "◆";
+  color: var(--accent);
+  font-size: 8px;
+}
+
+.agent-coordinator {
+  width: min(100%, 620px);
+  margin: 0 auto;
+  min-height: 118px;
+  padding: 15px 16px 13px;
+  border: 1px solid rgba(117, 245, 235, .62);
+  background:
+    linear-gradient(90deg, rgba(8, 50, 48, .88), rgba(2, 18, 19, .96));
+  box-shadow:
+    0 0 0 1px rgba(37, 224, 210, .05),
+    0 0 28px rgba(37, 224, 210, .06),
+    inset 0 0 30px rgba(37, 224, 210, .025);
+}
+
+.agent-coordinator::before {
+  content: "CONTROL NODE";
+  position: absolute;
+  top: 7px;
+  right: 76px;
+  color: rgba(117, 245, 235, .36);
+  font-size: 7px;
+  letter-spacing: .16em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.agent-coordinator .agent-name {
+  font-size: 17px;
+}
+
+.agent-coordinator .role-chip {
+  padding: 3px 7px;
+  font-size: 9px;
+  background: rgba(37, 224, 210, .10);
+}
+
+.team-members-area {
+  position: relative;
+  padding-top: 2px;
+}
+
+.team-members-area::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(37, 224, 210, .35) 15%, rgba(37, 224, 210, .35) 85%, transparent);
+}
+
+.team-members-area .team-subtitle {
+  margin-bottom: 10px;
+  color: #668f8b;
+  font-size: 9px;
+}
+
+.team-member-grid {
+  gap: 10px;
+}
+
+.team-member-grid .agent-overview {
+  min-height: 82px;
+  padding: 10px 11px 9px;
+  border-color: rgba(37, 224, 210, .14);
+  background: rgba(1, 9, 10, .74);
+}
+
+.team-member-grid .agent-overview::after {
+  width: 22px;
+  opacity: .55;
+}
+
+.team-member-grid .agent-name {
+  font-size: 12px;
+  font-weight: 680;
+}
+
+.team-member-grid .agent-id {
+  font-size: 8px;
+}
+
+.team-member-grid .agent-status {
+  padding: 3px 5px;
+  font-size: 8px;
+}
+
+.team-member-grid .agent-quick {
+  margin-top: 7px;
+  padding-top: 6px;
+}
+
+.team-member-grid .agent-team,
+.team-member-grid .agent-activity {
+  font-size: 9px;
+}
+
+@media (min-width: 1320px) {
+  .team-member-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1080px) {
+  .agent-coordinator {
+    width: 100%;
+  }
+
+  .team-member-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .team-section {
+    padding: 14px;
+  }
+
+  .team-header {
+    margin: -14px -14px 16px;
+    padding: 13px 14px;
+  }
+
+  .team-header h3 {
+    font-size: 16px;
+  }
+
+  .team-coordinator-area {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+  }
+
+  .team-member-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-coordinator::before {
+    display: none;
+  }
+}
