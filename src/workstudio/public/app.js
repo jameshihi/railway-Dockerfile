@@ -9,11 +9,18 @@ let eventSource = null;
 let registry = { teams: {}, agents: {} };
 
 function sessionState(session) {
-  if (session.hasActiveRun || session.running === true) return "working";
-  if (session.queued === true) return "queued";
+  if (session.hasActiveRun || session.running === true) return "執行中";
+  if (session.queued === true) return "排隊中";
   const state = String(session.status || session.state || "").toLowerCase();
-  if (["error", "failed", "failure"].includes(state)) return "error";
-  return "idle";
+  if (["error", "failed", "failure"].includes(state)) return "錯誤";
+  return "閒置";
+}
+
+function agentStatusLabel(status) {
+  const value = String(status || "idle").toLowerCase();
+  if (value === "working") return "執行中";
+  if (value === "error") return "錯誤";
+  return "閒置";
 }
 
 function formatTime(value) {
@@ -121,7 +128,7 @@ function renderAgents(agents, sessions = []) {
   if (!agents.length) {
     const p = document.createElement("p");
     p.className = "empty";
-    p.textContent = "Gateway 沒有回傳 Agent roster。";
+    p.textContent = "Gateway 沒有回傳 Agent 清單。";
     agentListEl.appendChild(p);
     return;
   }
@@ -144,17 +151,17 @@ function renderAgents(agents, sessions = []) {
 
     const title = document.createElement("strong");
     title.className = "agent-name";
-    title.textContent = agent.name || agent.agentId || "unknown";
+    title.textContent = agent.name || agent.agentId || "未知";
 
     const id = document.createElement("span");
     id.className = "agent-id";
-    id.textContent = agent.agentId || "unknown";
+    id.textContent = agent.agentId || "未知";
 
     identity.append(title, id);
 
     const status = document.createElement("span");
     status.className = `agent-status status-${agent.status || "idle"}`;
-    status.textContent = String(agent.status || "idle").toUpperCase();
+    status.textContent = agentStatusLabel(agent.status);
 
     main.append(identity, status);
 
@@ -162,14 +169,14 @@ function renderAgents(agents, sessions = []) {
     meta.className = "agent-meta";
 
     const metaItems = [
-      ["Model", agent.model || "未提供"],
-      ["Workspace", agent.workspace || "未提供"],
-      ["Runtime", agent.runtime || "未提供"],
-      ["Team", teamLabel(agent)],
-      ["Bindings", agent.bindings ?? "未提供"],
-      ["Last interaction", formatTime(lastInteractionAt)],
-      ["Last automation", formatTime(lastAutomationAt)],
-      ["Sessions", `${agentActivity.interaction.length} interaction / ${agentActivity.automation.length} automation`],
+      ["模型", agent.model || "未提供"],
+      ["工作區", agent.workspace || "未提供"],
+      ["執行環境", agent.runtime || "未提供"],
+      ["團隊", teamLabel(agent)],
+      ["綁定數", agent.bindings ?? "未提供"],
+      ["最後互動", formatTime(lastInteractionAt)],
+      ["最後自動化", formatTime(lastAutomationAt)],
+      ["工作階段", `${agentActivity.interaction.length} 個互動 / ${agentActivity.automation.length} 個自動化`],
     ];
 
     for (const [label, value] of metaItems) {
@@ -198,22 +205,22 @@ function renderGatewayState(data) {
   const sessions = Array.isArray(data.sessions) ? data.sessions : [];
 
   const recentSessions = sessions.slice(0, 12).map((session) => ({
-    label: session.label || session.key || session.id || session.agentId || session.owner || "session",
-    state: `${isAutomationSession(session) ? "AUTOMATION" : "INTERACTION"} · ${sessionState(session).toUpperCase()}`,
+    label: session.label || session.key || session.id || session.agentId || session.owner || "工作階段",
+    state: `${isAutomationSession(session) ? "自動化" : "互動"} · ${sessionState(session)}`,
   }));
 
   renderAgents(agents, sessions);
-  renderRows(sessionListEl, recentSessions, "目前沒有 session。");
+  renderRows(sessionListEl, recentSessions, "目前沒有工作階段。");
 
-  statusEl.textContent = data.connected && data.subscribed ? "CONNECTED" : "CONNECTING";
-  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · protocol ${data.protocol ?? "-"} · subscription ${data.subscribed ? "active" : "inactive"} · Agent roster ${agents.length} · sessions ${sessions.length}。互動與 Automation 活動已分開顯示；頁面關閉後 subscription 會跟著釋放。`;
+  statusEl.textContent = data.connected && data.subscribed ? "已連線" : "連線中";
+  summaryEl.textContent = `Gateway ${data.serverVersion || "unknown"} · 協定 ${data.protocol ?? "-"} · 訂閱 ${data.subscribed ? "啟用" : "未啟用"} · Agent 清單 ${agents.length} · 工作階段 ${sessions.length}。互動與自動化活動已分開顯示；頁面關閉後訂閱會跟著釋放。`;
 }
 
 function renderError(message) {
-  statusEl.textContent = "ERROR";
-  summaryEl.textContent = `無法讀取 Gateway subscription：${message || "unknown error"}`;
+  statusEl.textContent = "錯誤";
+  summaryEl.textContent = `無法讀取 Gateway 訂閱：${message || "未知錯誤"}`;
   renderAgents([]);
-  renderRows(sessionListEl, [], "尚未取得 Session 資料。");
+  renderRows(sessionListEl, [], "尚未取得工作階段資料。");
 }
 
 async function loadRegistry() {
@@ -233,8 +240,8 @@ async function loadRegistry() {
 function connectEventStream() {
   if (eventSource) eventSource.close();
 
-  statusEl.textContent = "CONNECTING";
-  summaryEl.textContent = "正在建立 Workstudio 即時連線…";
+  statusEl.textContent = "連線中";
+  summaryEl.textContent = "正在建立工作台即時連線…";
 
   const source = new EventSource("/workstudio/api/events");
   eventSource = source;
@@ -250,7 +257,7 @@ function connectEventStream() {
   source.addEventListener("gateway-error", (event) => {
     try {
       const payload = JSON.parse(event.data || "{}");
-      renderError(payload.message || "Gateway connection failed");
+      renderError(payload.message || "Gateway 連線失敗");
     } catch (error) {
       renderError(String(error));
     }
@@ -258,7 +265,7 @@ function connectEventStream() {
 
   source.onerror = () => {
     if (document.visibilityState === "hidden") return;
-    statusEl.textContent = "RECONNECTING";
+    statusEl.textContent = "重新連線中";
     summaryEl.textContent = "即時連線中斷，瀏覽器正在重新連線…";
   };
 }
