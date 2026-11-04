@@ -164,10 +164,10 @@ workstudioRouter.get("/api/sessions", async (_req, res) => {
 });
 
 workstudioRouter.use(express.static(publicDir, {
-  index: "index.html",
+  index: "studio.html",
   fallthrough: true,
 }));
 
 workstudioRouter.get("/", (_req, res) => {
-  res.sendFile(path.join(publicDir, "index.html"));
+  res.sendFile(path.join(publicDir, "studio.html"));
 });
