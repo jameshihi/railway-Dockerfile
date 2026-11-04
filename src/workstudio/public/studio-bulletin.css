@@ -1,0 +1,79 @@
+/* Workstudio scene bulletin board, intentionally below the office floor.
+   Static front-end demonstration, no agents are triggered. */
+.world-scroll{overflow:auto;overflow-x:auto;overflow-y:auto}
+.world-stage{
+ display:block!important;position:relative!important;
+ width:max(100%,1360px)!important;min-width:1360px!important;
+ height:auto!important;min-height:0!important;aspect-ratio:auto!important;
+ overflow:visible!important;background:#533c30!important;
+}
+.world-stage::after{display:none!important}
+.office-floor{
+ position:relative;display:block;width:100%;aspect-ratio:1440 / 850;
+ min-height:0;isolation:isolate;background:#614637;overflow:hidden;
+}
+.office-floor::after{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+ box-shadow:inset 0 0 55px #0a101b8a;
+}
+.office-floor .office-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.office-floor .zone-label{position:absolute;z-index:3}
+.office-floor .agent-pins{position:absolute;inset:0;z-index:4;pointer-events:none}
+.office-floor .agent-pin{pointer-events:auto}
+.bulletin-area{
+ position:relative;z-index:1;min-height:320px;padding:18px 8% 34px 12%;
+ border-top:12px solid #302b31;
+ background:repeating-linear-gradient(90deg,#5b4034 0 32px,#644839 32px 65px,#563d34 65px 99px);
+ box-shadow:inset 0 12px 20px #1b161a99;
+}
+.bulletin-frame{
+ width:min(1080px,100%);margin:0 auto;
+ padding:14px 20px 22px;
+ border:13px solid #aa7650;border-top-color:#d09b64;border-left-color:#c18e5e;
+ border-right-color:#6a4736;border-bottom-color:#63402f;border-radius:6px;
+ box-shadow:0 12px 0 #251b1f,0 23px 25px #1b151c99,inset 0 0 0 3px #64412f;
+ background:
+  radial-gradient(circle at 20% 16%,#b8825833,transparent 25%),
+  repeating-linear-gradient(0deg,#96663f 0 3px,#8a5a36 3px 7px,#95643f 7px 11px);
+ color:#fff0d8;
+}
+.bulletin-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:3px 4px 12px;border-bottom:2px dashed #704329}
+.bulletin-overline{display:block;color:#f8d8a7;font-size:10px;font-weight:900;letter-spacing:.15em}
+.bulletin-heading h2{font-size:19px;margin:3px 0;color:#fff2d6;text-shadow:2px 2px 0 #684027}
+.bulletin-heading p{margin:0;font-size:11px;color:#ffe0b9}
+.bulletin-shuffle{
+ flex:0 0 auto;cursor:pointer;background:#223746;color:#f0f7f6;
+ border:2px solid #d2b37e;border-radius:4px;padding:9px 12px;
+ font-size:11px;font-weight:800;box-shadow:3px 4px 0 #503b30;
+}
+.bulletin-shuffle:hover,.bulletin-shuffle:focus-visible{background:#345768;outline-color:#e0eebe}
+.bulletin-messages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:17px;align-content:start}
+.demo-note{
+ position:relative;min-width:0;padding:14px 13px 12px;background:#f7e7c3;color:#3c302c;
+ border:1px solid #8c7158;box-shadow:4px 5px 0 #3d2a2399;transform:rotate(var(--note-tilt,0deg));
+}
+.demo-note:nth-child(3n+2){background:#e1ebd3}
+.demo-note:nth-child(3n){background:#f1d8c9}
+.demo-note::before{content:"";position:absolute;left:50%;top:4px;transform:translateX(-50%);
+ height:9px;width:9px;border-radius:50%;background:#ad6146;border:2px solid #e8ae7e;box-shadow:1px 2px 0 #73503c}
+.demo-note-head{display:flex;align-items:center;gap:8px;margin:3px 0 9px}
+.demo-note-avatar{width:34px;height:40px;flex:0 0 auto}
+.demo-note-avatar svg{height:100%;width:100%;image-rendering:pixelated}
+.demo-note-name{font-size:12px;font-weight:900;overflow-wrap:anywhere}
+.demo-note-team{display:block;font-size:9px;color:#735b4b;margin-top:2px}
+.demo-note-message{font-size:12px;line-height:1.6;margin:0;overflow-wrap:anywhere}
+.demo-note-label{display:block;font-size:9px;color:#856955;margin-top:10px}
+.activity-overlay[hidden]{display:none!important}
+.studio-sidebar:not(.hud-open):not(.mobile-open){display:none!important}
+.studio-sidebar.hud-open{display:flex!important;bottom:auto;max-height:calc(100dvh - 95px)}
+.studio-sidebar [hidden]{display:none!important}
+.inspector-close{position:sticky;z-index:3;top:0;align-self:flex-end;
+ padding:5px 12px;background:#233d4e;color:#fff;border:1px solid #6d98aa;
+ border-radius:5px;cursor:pointer}
+@media(max-width:1050px){.bulletin-messages{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:780px){
+ .world-stage{width:1200px!important;min-width:1200px!important;height:auto!important;min-height:0!important}
+ .bulletin-area{padding-left:7%;padding-right:7%}
+ .studio-sidebar.hud-open{bottom:8px;max-height:calc(100dvh - 69px)}
+}
+@media(prefers-reduced-motion:reduce){.demo-note{transform:none}}
