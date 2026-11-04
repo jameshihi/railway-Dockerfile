@@ -3,42 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI 工作室｜Workstudio</title>
+<title>AI WORKSTUDIO｜2D 工作室</title>
 <link rel="stylesheet" href="/workstudio/studio.css">
 <link rel="stylesheet" href="/workstudio/studio-workshop.css">
-<link rel="stylesheet" href="/workstudio/studio-immersive.css">
+<link rel="stylesheet" href="/workstudio/studio-reference.css">
 </head>
 <body>
 <div class="studio-shell">
-<main class="studio-layout" aria-label="AI 2D 工作室">
-  <section class="world-panel" aria-label="2D 工作室主場景">
-    <header class="studio-topbar">
-      <div class="studio-brand"><span class="studio-mark" aria-hidden="true">✦</span><div><div class="studio-eyebrow">OPENCLAW · AI WORKSTUDIO</div><h1>AI 工作室</h1></div></div>
-      <div class="studio-controls">
-        <span class="connection" id="connection">連線中</span>
-        <button class="studio-action" id="openTeams" type="button" aria-controls="studioDrawer">團隊</button>
-        <button class="studio-action" id="openSessions" type="button" aria-controls="studioDrawer">紀錄</button>
-      </div>
-    </header>
-    <nav class="team-filter" id="teamFilters" aria-label="工作室團隊篩選"></nav>
-    <div class="world-scroll" tabindex="0" aria-label="可捲動的 2D 工作室，點選人物查看資訊">
-      <div class="world-stage" id="worldStage">
-        <img class="office-art" src="/workstudio/office-scene.svg" alt="2D 工作室環境，包含辦公桌、會議區、設備與室內裝飾">
-        <div class="zone-label zone-design">設計行銷團隊</div>
-        <div class="zone-label zone-finance">娃娃機財務團隊</div>
-        <div id="agentPins" class="agent-pins" aria-label="工作室 Agent 人物"></div>
-      </div>
+  <header class="studio-topbar">
+    <div class="studio-brand">
+      <span class="studio-mark" aria-hidden="true">✦</span>
+      <div><div class="studio-eyebrow">OPENCLAW MULTI-AGENT STUDIO</div><h1>AI WORKSTUDIO</h1></div>
     </div>
-    <div class="studio-hint"><span id="worldSummary">正在取得 Agent 清單…</span><span>點擊人物查看資訊 · 無動畫</span></div>
-  </section>
-</main>
-<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-<aside class="studio-drawer" id="studioDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
-  <header class="drawer-header"><div><span class="panel-eyebrow" id="drawerEyebrow">AGENT</span><h2 id="drawerTitle">角色資訊</h2></div><button id="closeDrawer" class="drawer-close" type="button" aria-label="關閉資訊視窗">✕</button></header>
-  <section id="drawerAgent" class="drawer-view"><div id="agentDetail" class="detail-content"><p class="muted">選擇人物後查看資訊。</p></div></section>
-  <section id="drawerTeams" class="drawer-view" hidden><div id="teamSummary" class="team-summary"><p class="muted">正在讀取團隊資料…</p></div></section>
-  <section id="drawerSessions" class="drawer-view" hidden><div id="recentSessions" class="recent-sessions"><p class="muted">目前尚無資料。</p></div></section>
-</aside>
+    <div class="studio-controls">
+      <span class="connection" id="connection" role="status">連線中</span>
+      <button class="studio-action" id="openTeams" type="button">團隊總覽</button>
+      <button class="studio-action" id="openSettings" type="button">設定</button>
+    </div>
+  </header>
+  <nav class="studio-rail" aria-label="工作室導覽">
+    <button class="rail-action active" type="button" data-view="workroom" aria-current="page"><span class="rail-icon" aria-hidden="true">⌂</span><span>工作室</span></button>
+    <button class="rail-action" type="button" data-view="teams"><span class="rail-icon" aria-hidden="true">♧</span><span>團隊</span></button>
+    <button class="rail-action" type="button" data-view="tasks"><span class="rail-icon" aria-hidden="true">▤</span><span>任務</span></button>
+    <button class="rail-action" type="button" data-view="records"><span class="rail-icon" aria-hidden="true">☷</span><span>紀錄</span></button>
+    <button class="rail-action" type="button" data-view="settings"><span class="rail-icon" aria-hidden="true">⚙</span><span>設定</span></button>
+  </nav>
+  <main class="studio-layout" aria-label="2D 工作室">
+    <section class="world-panel" aria-label="2D 工作室場景">
+      <div class="world-scroll" tabindex="0" aria-label="可捲動的 2D 工作室，點擊人物可查看資訊">
+        <div class="world-stage" id="worldStage">
+          <img class="office-art" src="/workstudio/office-scene.svg" alt="2D 工作室環境，包含桌椅、電腦、會議區及室內設備">
+          <div class="zone-label zone-design">設計行銷團隊</div>
+          <div class="zone-label zone-finance">娃娃機財務團隊</div>
+          <div class="agent-pins" id="agentPins" aria-label="場景 Agent 人物"></div>
+          <section class="activity-overlay" id="activityPanel" aria-label="即時活動日誌">
+            <div class="overlay-heading"><strong>即時活動日誌</strong><small>Live Activity · 真實工作階段</small></div>
+            <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
+          </section>
+        </div>
+      </div>
+      <div class="studio-hint"><span id="worldSummary">正在取得 Agent 清單…</span><span>點擊人物查看資料</span></div>
+    </section>
+    <aside class="studio-sidebar" id="studioSidebar" aria-label="工作室資訊面板">
+      <section class="side-card detail-card" id="profilePanel" aria-label="角色資訊">
+        <div class="side-heading"><span class="panel-eyebrow">AGENT PROFILE</span><h2>角色資訊</h2></div>
+        <div class="detail-content" id="agentDetail"><p class="muted">請點選場景中的人物。</p></div>
+      </section>
+      <section class="side-card" id="teamPanel" aria-label="團隊概況">
+        <div class="side-heading"><span class="panel-eyebrow">TEAM STATUS</span><h2>團隊概況</h2></div>
+        <div class="team-summary" id="teamSummary"><p class="muted">正在讀取團隊資料…</p></div>
+      </section>
+      <section class="side-card decision-panel" id="decisionPanel" aria-label="需要你決定">
+        <div class="side-heading"><span class="panel-eyebrow">DECISIONS</span><h2>需要你決定</h2></div>
+        <div id="decisionSummary" class="decision-body"><p class="muted">目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。</p></div>
+      </section>
+    </aside>
+  </main>
+  <div class="mobile-backdrop" id="mobileBackdrop" hidden></div>
+  <div class="mobile-panel-controls" id="mobilePanelControls"><button type="button" id="closeMobilePanel">關閉資訊面板</button></div>
+  <nav class="team-filter" id="teamFilters" aria-label="團隊篩選" hidden></nav>
 </div>
 <script src="/workstudio/studio.js" defer></script>
 </body>
