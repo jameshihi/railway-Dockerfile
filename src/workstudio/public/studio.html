@@ -10,9 +10,22 @@
 <link rel="stylesheet" href="/workstudio/studio-hud.css">
 <link rel="stylesheet" href="/workstudio/studio-bulletin.css">
 <link rel="stylesheet" href="/workstudio/studio-inlaid.css">
+<link rel="stylesheet" href="/workstudio/studio-scene-layout.css">
 </head>
 <body>
 <div class="studio-shell">
+
+
+  <main class="studio-layout" aria-label="2D 工作室">
+    <section class="world-panel" aria-label="2D 工作室場景">
+      <div class="world-scroll" tabindex="0" aria-label="可捲動的 2D 工作室，點擊人物可查看資訊">
+        <div class="world-stage" id="worldStage">
+          <div class="scene-room">
+          <div class="office-floor" id="officeFloor">
+            <img class="office-art" src="/workstudio/office-scene.svg" alt="2D 工作室環境，包含桌椅、電腦、會議區及室內設備">
+            <div class="zone-label zone-design">設計行銷團隊</div>
+            <div class="zone-label zone-finance">娃娃機財務團隊</div>
+            <div class="agent-pins" id="agentPins" aria-label="場景 Agent 人物"></div>
   <header class="studio-topbar">
     <div class="studio-brand">
       <span class="studio-mark" aria-hidden="true">✦</span>
@@ -33,33 +46,8 @@
     <button class="rail-action" type="button" data-view="records"><span class="rail-icon" aria-hidden="true">☷</span><span>聊天室</span></button>
     <button class="rail-action" type="button" data-view="settings"><span class="rail-icon" aria-hidden="true">⚙</span><span>設定</span></button>
   </nav>
-  <main class="studio-layout" aria-label="2D 工作室">
-    <section class="world-panel" aria-label="2D 工作室場景">
-      <div class="world-scroll" tabindex="0" aria-label="可捲動的 2D 工作室，點擊人物可查看資訊">
-        <div class="world-stage" id="worldStage">
-          <div class="office-floor" id="officeFloor">
-            <img class="office-art" src="/workstudio/office-scene.svg" alt="2D 工作室環境，包含桌椅、電腦、會議區及室內設備">
-            <div class="zone-label zone-design">設計行銷團隊</div>
-            <div class="zone-label zone-finance">娃娃機財務團隊</div>
-            <div class="agent-pins" id="agentPins" aria-label="場景 Agent 人物"></div>
-          </div>
-          <section class="bulletin-area" id="chatBoard" aria-label="Agent 聊天布告欄">
-            <div class="bulletin-frame">
-              <div class="bulletin-heading">
-                <div><span class="bulletin-overline">AI WORKSTUDIO · DEMO</span><h2>Agent 聊天布告欄</h2><p>展示對話：僅為前端預設文字，非真實 Agent 發言。</p></div>
-                <button class="bulletin-shuffle" type="button" id="shuffleChat">換一批對話</button>
-              </div>
-              <div id="demoChat" class="bulletin-messages" aria-label="Agent 示範對話"><p class="muted">正在讀取 Agent 名單…</p></div>
-            </div>
-          </section>
-        </div>
-      </div>
-      <section class="activity-overlay collapsed" id="activityPanel" aria-label="工作階段紀錄" hidden>
-        <div class="overlay-heading"><strong>工作階段紀錄</strong><small>真實 Session 資料</small><button type="button" class="activity-toggle" id="activityToggle" aria-expanded="false" aria-controls="recentSessions" aria-label="展開工作階段紀錄">+</button></div>
-        <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
-      </section>
       <div class="studio-hint"><span id="worldSummary">正在取得 Agent 清單…</span><span>點擊人物查看資料</span></div>
-    </section>
+          </div>
     <aside class="studio-sidebar" id="studioSidebar" aria-label="工作室資訊面板">
       <button type="button" id="closeInspector" class="inspector-close" aria-label="關閉資訊面板">✕ 關閉</button>
       <section class="side-card detail-card" id="profilePanel" aria-label="角色資訊">
@@ -76,6 +64,25 @@
         <div id="decisionSummary" class="decision-body"><p class="muted">目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。</p></div>
       </section>
     </aside>
+          </div>
+          <section class="bulletin-area" id="chatBoard" aria-label="Agent 聊天布告欄">
+            <div class="bulletin-frame">
+              <div class="bulletin-heading">
+                <div><span class="bulletin-overline">AI WORKSTUDIO · DEMO</span><h2>Agent 聊天布告欄</h2><p>展示對話：僅為前端預設文字，非真實 Agent 發言。</p></div>
+                <button class="bulletin-shuffle" type="button" id="shuffleChat">換一批對話</button>
+              </div>
+              <div id="demoChat" class="bulletin-messages" aria-label="Agent 示範對話"><p class="muted">正在讀取 Agent 名單…</p></div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <section class="activity-overlay collapsed" id="activityPanel" aria-label="工作階段紀錄" hidden>
+        <div class="overlay-heading"><strong>工作階段紀錄</strong><small>真實 Session 資料</small><button type="button" class="activity-toggle" id="activityToggle" aria-expanded="false" aria-controls="recentSessions" aria-label="展開工作階段紀錄">+</button></div>
+        <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
+      </section>
+
+    </section>
+
   </main>
   <div class="mobile-backdrop" id="mobileBackdrop" hidden></div>
   <div class="mobile-panel-controls" id="mobilePanelControls"><button type="button" id="closeMobilePanel">關閉資訊面板</button></div>
