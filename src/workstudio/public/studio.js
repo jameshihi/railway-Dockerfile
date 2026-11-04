@@ -34,7 +34,7 @@ function showPanel(view){
  setActiveView(view==="profile"?"workroom":view);
  if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
  if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
- if(view==="records"){toggleMobilePanel(false);el("activityPanel").classList.remove("collapsed");el("activityToggle").textContent="−";el("activityToggle").setAttribute("aria-expanded","true");el("activityToggle").setAttribute("aria-label","收合活動日誌");el("activityToggle").focus();return;}
+ if(view==="records"){toggleMobilePanel(false);el("chatBoard").scrollIntoView({block:"start",inline:"nearest"});return;}
  focusPanel(view);
  toggleMobilePanel(true);
  el("studioSidebar").scrollTop=0;
@@ -58,6 +58,7 @@ function initDrawers(){
  el("closeInspector").addEventListener("click",closeDrawer);
  el("worldStage").addEventListener("click",(event)=>{if(!event.target.closest(".agent-pin"))closeDrawer();});
  el("activityToggle").addEventListener("click",toggleActivity);
+ el("shuffleChat").addEventListener("click",buildDemoChat);
  document.addEventListener("keydown",event=>{if(event.key==="Escape")closeDrawer();});
 }
 function safeAvatar(path){return typeof path==="string" && /^\/workstudio\/assets\/[a-zA-Z0-9_.-]+\.(png|webp|jpg|jpeg|svg)$/.test(path)?path:FALLBACK_AVATAR;}
@@ -98,6 +99,62 @@ function characterNode(agent,cls){
  }else{wrap.innerHTML=characterMarkup(agent.agentId);}
  wrap.setAttribute("aria-hidden","true");
  return wrap;
+}
+
+
+// All messages below are static, illustrative text, never Agent output.
+const DEMO_LINES={
+ "main":["大家有新的想法可以先貼在布告欄，我們一起看看。","先把想法整理清楚，接下來就容易討論了。","工作室今天想聊些什麼主題呢？"],
+ "designer":["我喜歡保留空白，讓畫面有呼吸的空間。","配色如果更協調，整個作品會更有性格。","我在想，能不能讓操作介面更直覺一些？"],
+ "brand":["品牌的個性應該能從每個小細節感受到。","一個好名稱，會讓故事更容易被記住。","比起跟風，我更喜歡建立自己的識別感。"],
+ "copywriter":["有時候一句簡單的話，比長篇介紹更有力量。","換個說法，可能就能找到新的靈感。","今天的文字想走溫暖還是俐落路線？"],
+ "researcher":["先弄清楚問題，再決定怎麼找答案。","不同來源的看法，也許能拼出更完整的輪廓。","我喜歡提出問題，因為問題常常帶來新方向。"],
+ "technical":["結構越簡單，通常越容易維護。","好的系統應該讓使用者感覺不到背後的複雜。","先確認資料來源，再來討論畫面怎麼呈現。"],
+ "critic":["我想先找出不夠清楚的地方。","如果使用情境改變，這個方案還成立嗎？","多問一個為什麼，可能就能少走一些彎路。"],
+ "producer":["把想法變成可執行的步驟，才會真正往前走。","先完成可以驗證的部分，再慢慢打磨細節。","我偏好先把交付標準說清楚。"],
+ "market-scout":["從不同市場觀察，常常能發現有趣的差異。","新的趨勢值得看，但適不適合自己更重要。","有些靈感來自觀察日常的小事。"],
+ "finance-main":["把資料整理清楚，討論起來就會更安心。","每項收支都應該有能追溯的依據。","財務資訊應該清晰，而不是只有一堆數字。"],
+ "bookkeeper":["清楚的分類，能讓日後查找方便很多。","記錄得好，整理時就不需要猜測。","我喜歡一致又容易理解的紀錄方式。"],
+ "finance-auditor":["先確認每筆資料的來源，再來判斷是否合理。","核對時要注意容易被忽略的小細節。","能回頭查證的資料，才讓人更放心。"]
+};
+const GENERAL_DEMO_LINES=["大家好，我來布告欄留下我的想法。","有新的點子，歡迎一起交流。","期待和團隊分享更多觀察。"];
+let demoRosterSignature="";
+let demoLinesCache=[];
+function shuffleList(array){
+ const values=[...array];
+ for(let i=values.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [values[i],values[j]]=[values[j],values[i]];
+ }
+ return values;
+}
+function buildDemoChat(){
+ demoLinesCache=shuffleList(roster.map(agent=>{
+  const possibilities=DEMO_LINES[agent.agentId]||GENERAL_DEMO_LINES;
+  return {agent,message:possibilities[Math.floor(Math.random()*possibilities.length)]};
+ }));
+ demoRosterSignature=roster.map(a=>a.agentId).sort().join("|");
+ renderDemoChat();
+}
+function renderDemoChat(){
+ const root=el("demoChat");
+ if(!root)return;
+ root.replaceChildren();
+ if(!demoLinesCache.length){
+  root.append(mk("p","muted","目前尚未取得 Agent 名單，沒有展示對話。"));
+  return;
+ }
+ demoLinesCache.forEach(({agent,message},index)=>{
+  const note=mk("article","demo-note");
+  note.style.setProperty("--note-tilt",["-1deg",".6deg","1deg","-.5deg"][index%4]);
+  const head=mk("div","demo-note-head");
+  const portrait=characterNode(agent,"demo-note-avatar");
+  const identity=mk("div");
+  identity.append(mk("span","demo-note-name",agent.name||agent.agentId),mk("small","demo-note-team",teamName(agentTeam(agent))));
+  head.append(portrait,identity);
+  note.append(head,mk("p","demo-note-message",message),mk("small","demo-note-label","展示對話 · 非 Agent 實際訊息"));
+  root.append(note);
+ });
 }
 
 function stamp(s){for(const raw of [s.lastInteractionAt,s.lastActivityAt,s.updatedAt,s.lastMessageAt,s.createdAt]){if(raw==null)continue;const n=typeof raw==="number"?raw:Date.parse(raw);if(Number.isFinite(n))return n;}return null;}
@@ -150,7 +207,7 @@ function renderSessions(){
  for(const s of ordered){const w=mk("div","session-row");w.append(mk("div","",s.label||s.key||s.id||"未命名工作階段"));w.append(mk("div","session-meta",`${automation(s)?"自動化":"互動"} · ${agentForSession(s)||"未知 Agent"} · ${formatTime(stamp(s))}`));root.append(w);}
  if(!ordered.length)root.append(mk("p","muted","目前沒有可顯示的工作階段。"));
 }
-function renderAll(){if(selection&&!roster.some(a=>a.agentId===selection))selection=null;if(!selection)selection=roster.find(a=>agentRole(a)==="coordinator")?.agentId||roster[0]?.agentId||null;renderFilters();renderPins();renderDetail();renderTeams();renderSessions();}
+function renderAll(){if(selection&&!roster.some(a=>a.agentId===selection))selection=null;if(!selection)selection=roster.find(a=>agentRole(a)==="coordinator")?.agentId||roster[0]?.agentId||null;renderFilters();renderPins();renderDetail();renderTeams();renderSessions();const signature=roster.map(a=>a.agentId).sort().join("|");if(signature!==demoRosterSignature)buildDemoChat();}
 async function loadRegistry(){try{const response=await fetch("/workstudio/registry.json",{cache:"no-store"});if(!response.ok)throw new Error("registry");const data=await response.json();registry={teams:data.teams||{},agents:data.agents||{}};}catch{registry={teams:{},agents:{}};}}
 function connect(){source?.close();source=new EventSource("/workstudio/api/events");const connection=el("connection");source.addEventListener("gateway-state",event=>{try{const data=JSON.parse(event.data||"{}");roster=Array.isArray(data.agents)?data.agents:[];sessions=Array.isArray(data.sessions)?data.sessions:[];connection.textContent=data.connected&&data.subscribed?"已連線":"連線中";connection.className="connection"+(data.connected&&data.subscribed?" online":"");renderAll();}catch{connection.textContent="資料解析失敗";connection.className="connection error";}});source.addEventListener("gateway-error",()=>{connection.textContent="Gateway 錯誤";connection.className="connection error";});source.onerror=()=>{if(document.visibilityState!=="hidden"){connection.textContent="重新連線中";connection.className="connection";}};}
 function disconnect(){if(source){source.close();source=null;}}
