@@ -20,23 +20,31 @@ function setActiveView(view){
  });
 }
 function showPanel(view){
- if(view==="workroom"){setActiveView("workroom");toggleMobilePanel(false);el("worldStage").scrollIntoView({block:"nearest",inline:"nearest"});return;}
+ if(view==="workroom"){setActiveView("workroom");toggleMobilePanel(false);return;}
  const target=view==="teams"?"teamPanel":view==="records"?"activityPanel":view==="profile"?"profilePanel":"decisionPanel";
  setActiveView(view==="profile"?"workroom":view);
  if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
  if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
- if(view==="records"){toggleMobilePanel(false);el(target).scrollIntoView({behavior:"instant",block:"nearest"});return;}
+ if(view==="records"){toggleMobilePanel(false);el("activityPanel").classList.remove("collapsed");el("activityToggle").textContent="−";el("activityToggle").setAttribute("aria-expanded","true");el("activityToggle").setAttribute("aria-label","收合活動日誌");el("activityToggle").focus();return;}
  toggleMobilePanel(true);
- if(window.matchMedia("(max-width: 780px)").matches)el(target).scrollIntoView({block:"nearest"});
+ if(window.matchMedia("(max-width: 780px)").matches){const panel=el("studioSidebar");const item=el(target);panel.scrollTop=item.offsetTop-panel.offsetTop;}
 }
 function openDrawer(mode){showPanel(mode==="agent"?"profile":mode==="sessions"?"records":"teams");}
 function closeDrawer(){toggleMobilePanel(false);}
+function toggleActivity(){
+ const panel=el("activityPanel"),button=el("activityToggle");
+ const collapsed=panel.classList.toggle("collapsed");
+ button.textContent=collapsed?"+":"−";
+ button.setAttribute("aria-expanded",String(!collapsed));
+ button.setAttribute("aria-label",collapsed?"展開活動日誌":"收合活動日誌");
+}
 function initDrawers(){
  document.querySelectorAll(".rail-action").forEach(button=>button.addEventListener("click",()=>showPanel(button.dataset.view)));
  el("openTeams").addEventListener("click",()=>showPanel("teams"));
  el("openSettings").addEventListener("click",()=>showPanel("settings"));
  el("mobileBackdrop").addEventListener("click",closeDrawer);
  el("closeMobilePanel").addEventListener("click",closeDrawer);
+ el("activityToggle").addEventListener("click",toggleActivity);
  document.addEventListener("keydown",event=>{if(event.key==="Escape")closeDrawer();});
 }
 function safeAvatar(path){return typeof path==="string" && /^\/workstudio\/assets\/[a-zA-Z0-9_.-]+\.(png|webp|jpg|jpeg|svg)$/.test(path)?path:FALLBACK_AVATAR;}
