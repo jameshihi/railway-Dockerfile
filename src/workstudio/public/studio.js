@@ -50,6 +50,7 @@ function toggleActivity(){
 }
 function initDrawers(){
  document.querySelectorAll(".rail-action").forEach(button=>button.addEventListener("click",()=>showPanel(button.dataset.view)));
+ el("openChat").addEventListener("click",()=>showPanel("records"));
  el("openProfile").addEventListener("click",()=>showPanel("profile"));
  el("openTeams").addEventListener("click",()=>showPanel("teams"));
  el("openSettings").addEventListener("click",()=>showPanel("settings"));
