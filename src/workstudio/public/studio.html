@@ -18,6 +18,7 @@
     </div>
     <div class="studio-controls">
       <span class="connection" id="connection" role="status">連線中</span>
+      <button class="studio-action" id="openProfile" type="button" aria-controls="studioSidebar" aria-expanded="false">角色資訊</button>
       <button class="studio-action" id="openTeams" type="button">團隊總覽</button>
       <button class="studio-action" id="openSettings" type="button">設定</button>
     </div>
@@ -39,13 +40,14 @@
           <div class="agent-pins" id="agentPins" aria-label="場景 Agent 人物"></div>
         </div>
       </div>
-      <section class="activity-overlay" id="activityPanel" aria-label="即時活動日誌">
-        <div class="overlay-heading"><strong>即時活動日誌</strong><small>Live Activity · 真實工作階段</small><button type="button" class="activity-toggle" id="activityToggle" aria-expanded="true" aria-controls="recentSessions" aria-label="收合活動日誌">−</button></div>
+      <section class="activity-overlay collapsed" id="activityPanel" aria-label="即時活動日誌">
+        <div class="overlay-heading"><strong>即時活動日誌</strong><small>Live Activity · 真實工作階段</small><button type="button" class="activity-toggle" id="activityToggle" aria-expanded="false" aria-controls="recentSessions" aria-label="展開活動日誌">+</button></div>
         <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
       </section>
       <div class="studio-hint"><span id="worldSummary">正在取得 Agent 清單…</span><span>點擊人物查看資料</span></div>
     </section>
     <aside class="studio-sidebar" id="studioSidebar" aria-label="工作室資訊面板">
+      <button type="button" id="closeInspector" class="inspector-close" aria-label="關閉資訊面板">✕ 關閉</button>
       <section class="side-card detail-card" id="profilePanel" aria-label="角色資訊">
         <div class="side-heading"><span class="panel-eyebrow">AGENT PROFILE</span><h2>角色資訊</h2></div>
         <div class="detail-content" id="agentDetail"><p class="muted">請點選場景中的人物。</p></div>
