@@ -45,6 +45,8 @@ function renderFilters(){
 function renderTeams(){
  const root=el("teamSummary");root.replaceChildren();const ids=[...new Set(roster.map(agentTeam))];
  for(const id of ids){const rows=roster.filter(a=>agentTeam(a)===id);const w=mk("div","team-row");const text=mk("div");text.append(mk("span","team-title",teamName(id)),mk("small","",rows.some(a=>a.status==="working")?"有 Agent 執行中":"目前無執行中 Agent"));w.append(text,mk("span","team-num",rows.length+" 位"));root.append(w);}
+ const unplaced=roster.filter(a=>!registry.agents?.[a.agentId]?.scene);
+ if(unplaced.length){const block=mk("div","unplaced-agents");block.append(mk("p","muted","尚未配置場景位置的 Agent（仍可查看）："));for(const a of unplaced){const b=mk("button","filter-btn",a.name||a.agentId);b.type="button";b.addEventListener("click",()=>{selection=a.agentId;renderDetail();renderPins();});block.append(b);}root.append(block);}
  if(!ids.length)root.append(mk("p","muted","尚未收到團隊資料。"));
  el("worldSummary").textContent=`目前 ${ids.length} 組團隊 · ${roster.length} 位 Agent · 點選查看`;
 }
