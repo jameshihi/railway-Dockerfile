@@ -8,17 +8,101 @@
     }
   },
   "agents": {
-    "main": { "team": "main-work", "role": "coordinator" },
-    "designer": { "team": "main-work", "role": "member" },
-    "brand": { "team": "main-work", "role": "member" },
-    "copywriter": { "team": "main-work", "role": "member" },
-    "researcher": { "team": "main-work", "role": "member" },
-    "technical": { "team": "main-work", "role": "member" },
-    "critic": { "team": "main-work", "role": "member" },
-    "producer": { "team": "main-work", "role": "member" },
-    "market-scout": { "team": "main-work", "role": "member" },
-    "finance-main": { "team": "finance", "role": "coordinator" },
-    "bookkeeper": { "team": "finance", "role": "member" },
-    "finance-auditor": { "team": "finance", "role": "member" }
+    "main": {
+      "team": "main-work",
+      "role": "coordinator",
+      "scene": {
+        "x": 35,
+        "y": 83
+      }
+    },
+    "designer": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 14,
+        "y": 28
+      }
+    },
+    "brand": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 35,
+        "y": 28
+      }
+    },
+    "copywriter": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 14,
+        "y": 57
+      }
+    },
+    "researcher": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 56,
+        "y": 28
+      }
+    },
+    "technical": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 35,
+        "y": 57
+      }
+    },
+    "critic": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 56,
+        "y": 57
+      }
+    },
+    "producer": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 14,
+        "y": 83
+      }
+    },
+    "market-scout": {
+      "team": "main-work",
+      "role": "member",
+      "scene": {
+        "x": 56,
+        "y": 83
+      }
+    },
+    "finance-main": {
+      "team": "finance",
+      "role": "coordinator",
+      "scene": {
+        "x": 82,
+        "y": 28
+      }
+    },
+    "bookkeeper": {
+      "team": "finance",
+      "role": "member",
+      "scene": {
+        "x": 82,
+        "y": 57
+      }
+    },
+    "finance-auditor": {
+      "team": "finance",
+      "role": "member",
+      "scene": {
+        "x": 82,
+        "y": 83
+      }
+    }
   }
 }
