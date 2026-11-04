@@ -1,0 +1,87 @@
+/* Scene-space layout: HUD is furniture/signage inside the scrolling room, not a viewport overlay.
+   The office and the control wall share a floor plan. No background work is introduced. */
+.studio-shell{position:relative;display:block;width:100%;height:100dvh;min-height:0;overflow:hidden;background:#4a342d}
+.studio-layout{position:absolute;inset:0;display:block;pointer-events:none}
+.world-panel{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+.world-scroll{position:absolute;inset:0;overflow:auto;width:100%;height:100%;pointer-events:auto}
+.world-stage{
+ position:relative!important;display:block!important;width:max(100%,1370px)!important;
+ min-width:1370px!important;height:auto!important;min-height:0!important;
+ overflow:visible!important;aspect-ratio:auto!important;
+}
+.scene-room{
+ display:grid;grid-template-columns:minmax(1040px,1fr) 330px;
+ align-items:stretch;min-width:1370px;position:relative;
+ background:#563a2e;border:9px solid #44302a;
+ box-shadow:inset 0 0 0 4px #ac754a;
+}
+.scene-room .office-floor{
+ position:relative;width:100%;min-height:0;aspect-ratio:1440 / 850;
+ overflow:hidden;isolation:isolate;
+}
+.office-floor .office-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.scene-room .studio-topbar{
+ position:absolute!important;left:12px!important;right:10px!important;top:10px!important;
+ bottom:auto!important;width:auto!important;display:flex!important;
+ align-items:flex-start!important;justify-content:space-between!important;
+ z-index:12;pointer-events:none;
+}
+.scene-room .studio-topbar .studio-brand,
+.scene-room .studio-topbar .studio-controls{pointer-events:auto}
+.scene-room .studio-rail{
+ position:absolute!important;left:10px!important;top:105px!important;right:auto!important;
+ bottom:auto!important;width:70px!important;z-index:11;
+}
+.scene-room .studio-hint{
+ position:absolute!important;left:94px!important;bottom:12px!important;
+ right:auto!important;top:auto!important;z-index:6;
+ max-width:250px!important;pointer-events:none;
+}
+.scene-room .office-floor .agent-pins{z-index:5}
+.scene-room .office-floor .agent-pin{pointer-events:auto}
+.world-stage .scene-room .studio-sidebar,
+.world-stage .scene-room .studio-sidebar:not(.hud-open):not(.mobile-open){
+ position:relative!important;display:flex!important;
+ top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+ width:100%!important;max-width:none!important;max-height:none!important;
+ height:auto!important;min-height:100%!important;
+ overflow:visible!important;overscroll-behavior:auto!important;
+ grid-column:2;z-index:1;pointer-events:auto;
+ padding:85px 10px 24px!important;gap:12px!important;
+ border:0!important;border-left:9px ridge #bc8450!important;
+ border-radius:0!important;box-shadow:inset 9px 0 13px #261921aa!important;
+ background:repeating-linear-gradient(0deg,#573d32 0 42px,#614637 42px 46px,#4c362d 46px 87px)!important;
+}
+.scene-room .studio-sidebar::before{
+ content:"資訊牆 · WORKSTUDIO";position:absolute;top:22px;left:13px;right:13px;
+ display:block;padding:10px 5px;text-align:center;font-size:13px;font-weight:850;
+ color:#ffdfaf;letter-spacing:.08em;
+ background:linear-gradient(#4d3228,#142338);border:3px ridge #d7a365;
+ box-shadow:0 5px 0 #35241e;
+}
+.scene-room .studio-sidebar .side-card{flex-shrink:0}
+.scene-room .studio-sidebar .inspector-close{display:none!important}
+.scene-room .studio-sidebar [hidden]{display:none!important}
+.scene-room .studio-sidebar .side-card[hidden]{display:none!important}
+.scene-room .studio-sidebar .side-card{margin:0;min-width:0}
+.scene-room .studio-sidebar .side-heading{border-radius:2px}
+.scene-room .studio-sidebar .team-filter{flex-wrap:wrap}
+.scene-room .bulletin-area{grid-column:1/-1}
+.world-stage>.bulletin-area{border-top:12px ridge #a4774c}
+.world-stage .bulletin-frame{width:min(1080px,90%);max-width:none}
+.activity-overlay[hidden]{display:none!important}
+.mobile-backdrop{display:none!important}
+.mobile-panel-controls{display:none!important}
+@media(max-width:780px){
+ .world-stage{width:1370px!important;min-width:1370px!important}
+ .scene-room{min-width:1370px;grid-template-columns:1040px 330px}
+ .scene-room .studio-topbar{left:8px!important;top:7px!important;right:8px!important}
+ .scene-room .studio-rail{left:7px!important;top:71px!important;width:55px!important}
+ .scene-room .studio-hint{left:70px!important;bottom:10px!important}
+ .world-stage .scene-room .studio-sidebar,
+ .world-stage .scene-room .studio-sidebar:not(.hud-open):not(.mobile-open){
+  position:relative!important;display:flex!important;top:auto!important;right:auto!important;
+  bottom:auto!important;height:auto!important;max-height:none!important;
+  width:100%!important;padding:85px 10px 24px!important;
+ }
+}
