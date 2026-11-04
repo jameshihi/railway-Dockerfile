@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/workstudio/studio.css">
 <link rel="stylesheet" href="/workstudio/studio-workshop.css">
 <link rel="stylesheet" href="/workstudio/studio-reference.css">
+<link rel="stylesheet" href="/workstudio/studio-hud.css">
 </head>
 <body>
 <div class="studio-shell">
@@ -36,12 +37,12 @@
           <div class="zone-label zone-design">設計行銷團隊</div>
           <div class="zone-label zone-finance">娃娃機財務團隊</div>
           <div class="agent-pins" id="agentPins" aria-label="場景 Agent 人物"></div>
-          <section class="activity-overlay" id="activityPanel" aria-label="即時活動日誌">
-            <div class="overlay-heading"><strong>即時活動日誌</strong><small>Live Activity · 真實工作階段</small></div>
-            <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
-          </section>
         </div>
       </div>
+      <section class="activity-overlay" id="activityPanel" aria-label="即時活動日誌">
+        <div class="overlay-heading"><strong>即時活動日誌</strong><small>Live Activity · 真實工作階段</small><button type="button" class="activity-toggle" id="activityToggle" aria-expanded="true" aria-controls="recentSessions" aria-label="收合活動日誌">−</button></div>
+        <div class="recent-sessions" id="recentSessions"><p class="muted">尚未取得工作階段。</p></div>
+      </section>
       <div class="studio-hint"><span id="worldSummary">正在取得 Agent 清單…</span><span>點擊人物查看資料</span></div>
     </section>
     <aside class="studio-sidebar" id="studioSidebar" aria-label="工作室資訊面板">
