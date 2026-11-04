@@ -1,0 +1,168 @@
+/* Workstudio scene-integrated game UI.
+   Decorative styling only: no new animation, network polling, or Agent actions. */
+:root {
+  --frame-brass:#dc9c53;
+  --frame-glow:#f3bf72;
+  --frame-dark:#533327;
+  --wood-top:#7d4d32;
+  --wood-side:#3b2728;
+  --panel-deep:#111e2e;
+  --panel-ink:#f8ead3;
+}
+
+/* Bring the studio backdrop up to the frame, rather than leaving a separate app shell. */
+.studio-shell {
+  background:#45312d;
+  border:7px solid #3f2d2a;
+  box-shadow:inset 0 0 0 3px #a36b3f;
+}
+.world-panel,
+.world-scroll { background:#59402f; }
+.world-stage { border-left:9px solid #6b4936;border-right:9px solid #6b4936; }
+.office-floor { box-shadow:inset 0 0 0 9px #352929; }
+.studio-topbar { top:6px;left:14px;right:12px;align-items:flex-start; }
+
+/* The logo is a fixed wooden nameplate attached to the office fascia. */
+.studio-brand {
+  position:relative;isolation:isolate;overflow:visible;
+  background:linear-gradient(180deg,#49352f 0%,#1d2633 20%,#162032 83%,#4f362b 100%);
+  border:4px ridge var(--frame-brass);
+  border-radius:7px 17px 17px 7px;
+  padding:10px 24px 10px 12px;
+  box-shadow:
+    inset 0 2px 0 #ffe0a2,
+    inset 0 -3px 0 #513323,
+    inset 0 0 0 4px #2a2530,
+    0 4px 0 #382820,
+    0 8px 18px #130e11a6;
+  clip-path:polygon(0 0,93% 0,100% 25%,100% 75%,93% 100%,0 100%);
+}
+.studio-brand::before {
+  content:"";position:absolute;inset:5px 11px 5px 5px;
+  border:1px solid #cfa16688;
+  clip-path:polygon(0 0,92% 0,100% 25%,100% 75%,92% 100%,0 100%);
+  z-index:-1;pointer-events:none;
+}
+.studio-brand::after {
+  content:"";position:absolute;right:14px;top:calc(50% - 4px);
+  width:8px;height:8px;border-radius:50%;
+  background:#eab875;border:2px solid #583c28;box-shadow:0 0 7px #f2b35e7d;
+  pointer-events:none;
+}
+.studio-brand .studio-mark {
+  background:radial-gradient(circle at 45% 38%,#cb7840,#763f2b 75%);
+  border:2px solid #ffcf7e;border-radius:6px;color:#fff1c7;
+  box-shadow:inset 0 0 0 2px #553328,0 0 10px #f0a95355;
+}
+.studio-brand h1 { color:#fff5df;text-shadow:1px 2px 0 #493127,0 0 10px #e6a45e50;letter-spacing:.025em; }
+.studio-brand .studio-eyebrow {color:#f0cb9a}
+
+/* Top controls sit in a connected, inset brass control bar. */
+.studio-controls {gap:0;border:3px ridge #a47549;border-radius:7px;
+  background:linear-gradient(180deg,#563d2e,#292b31);
+  box-shadow:inset 0 1px #ffdd976b,0 5px 0 #3d2826,0 8px 12px #17141b7d;
+  overflow:hidden;
+}
+.studio-controls .connection,
+.studio-controls .studio-action {
+  border:0!important;border-right:1px solid #a2795088!important;border-radius:0!important;
+  background:linear-gradient(180deg,#273445,#142235)!important;
+  min-height:42px;box-shadow:inset 0 1px #ffffff17!important;
+  color:#f4ead6;padding:10px 14px;
+}
+.studio-controls .studio-action:last-child{border-right:0!important}
+.studio-controls .connection.online {color:#83f0be!important;background:#1c3734!important}
+.studio-controls .studio-action:hover,.studio-controls .studio-action:focus-visible {
+  background:#3f4a4a!important;color:#ffe5b1!important;
+}
+
+/* The navigation resembles a sign bolted onto the room wall. */
+.studio-rail {
+  top:112px;left:11px;width:74px;padding:13px 6px;
+  border:5px ridge #b47b47;border-radius:14px;
+  background:linear-gradient(90deg,#422c29 0,#242b36 16%,#162337 50%,#242b36 84%,#3c2928 100%);
+  box-shadow:inset 0 0 0 3px #182337,inset 0 0 0 5px #b37a4860,0 7px 0 #38231d,0 12px 18px #090e14b5;
+}
+.studio-rail::before,.studio-rail::after {
+  content:"";position:absolute;left:calc(50% - 4px);
+  width:8px;height:8px;border-radius:50%;background:#e3b471;
+  border:2px solid #643e2b;box-shadow:inset 0 1px #fff1c4,0 0 8px #ffc46b66;
+  pointer-events:none;
+}
+.studio-rail::before{top:3px}.studio-rail::after{bottom:3px}
+.rail-action{position:relative;border-radius:3px;min-height:64px;color:#d9d4cd}
+.rail-action:not(:last-child)::after {
+  content:"";position:absolute;bottom:-4px;left:8px;right:8px;height:1px;background:#b88c6270;
+}
+.rail-action.active,.rail-action:hover,.rail-action:focus-visible {
+  background:linear-gradient(180deg,#236063,#193e4b);
+  color:#baf9ed;border:2px solid #bd925f;box-shadow:inset 0 0 10px #44d6bb36,0 0 9px #d1a56550;
+}
+.rail-action.active .rail-icon{color:#b8f8e6}
+
+/* Inspector is a wooden display cabinet: nested brass moulding / recessed glass. */
+.studio-sidebar {
+  top:96px;right:12px;
+  background:linear-gradient(90deg,#4d342a,#38262b 10%,#38262b 90%,#613c2c);
+  padding:10px 9px 13px;
+  border:7px ridge #c68a4d;
+  border-radius:14px;
+  box-shadow:inset 0 0 0 3px #2a2329,0 7px 0 #3e2924,0 11px 21px #0b0e19b8;
+  gap:10px;
+}
+.studio-sidebar.hud-open {
+  max-height:calc(100dvh - 116px);
+}
+.studio-sidebar .side-card {
+  border:3px solid #976d42;
+  border-radius:7px;background:linear-gradient(160deg,#172436f8,#0e192bdc);
+  box-shadow:inset 0 0 0 2px #314155,inset 0 0 20px #040a16,0 3px 0 #503527;
+  backdrop-filter:none;
+}
+.studio-sidebar .side-heading {
+  background:linear-gradient(180deg,#5b3b2f,#342f36);
+  border-bottom:2px solid #c18e55;
+}
+.studio-sidebar .side-heading h2{color:#ffe1b5;text-shadow:1px 2px 0 #2a2025}
+.studio-sidebar .side-heading .panel-eyebrow{color:#e5bb84}
+.studio-sidebar .detail-state {background:#254e3e;border-color:#b58c52}
+.studio-sidebar .detail-row,.studio-sidebar .team-row{border-color:#9474504d}
+.inspector-close {
+  align-self:flex-end;background:linear-gradient(180deg,#6d4c36,#3e302f);
+  border:2px solid #d4a369;border-radius:4px;color:#ffe4c1;
+  box-shadow:0 2px 0 #34231b;
+}
+
+/* Status and room placards are also embedded signs, not generic pills. */
+.zone-label {
+ border:4px ridge #d19a5b;border-radius:7px;
+ background:linear-gradient(180deg,#4e3128,#192431 35%,#182334 80%,#473024);
+ color:#ffe4b7;padding:8px 15px;box-shadow:inset 0 1px #ffdf9a66,0 5px 0 #553224,0 8px 14px #100c1691;
+ text-shadow:1px 2px #291e24;
+}
+.pin-name{border:2px solid #d09b5e;background:#242734f5;color:#fff7db;box-shadow:0 3px 0 #5b3a2b,0 5px 9px #0c1521b5}
+.pin-badge{background:#704d31;border:1px solid #ecc07a;color:#ffe5a8}
+.studio-hint{
+ background:linear-gradient(180deg,#222d38e0,#131e2ee0);
+ border:3px ridge #9f744e;border-radius:6px;
+ box-shadow:0 4px 0 #52382b,0 8px 14px #10121ca6;
+}
+
+/* The Agent chat corkboard remains in the room, with matching wall trim. */
+.bulletin-area{border-top:14px ridge #b7804c}
+.bulletin-frame{box-shadow:inset 0 0 0 3px #654331,0 9px 0 #453023,0 16px 25px #0d0d147a}
+.bulletin-shuffle{background:#344452;border-color:#e0ae71;color:#fff1d3}
+@media(max-width:780px){
+ .studio-brand{padding:7px 16px 7px 6px}
+ .studio-brand::after{right:8px;width:5px;height:5px}
+ .studio-rail{top:68px;left:5px;width:54px;padding:10px 3px;border-width:3px}
+ .rail-action{min-height:49px}
+ .studio-controls .connection,.studio-controls .studio-action{padding:6px;font-size:10px;min-height:32px}
+ .studio-sidebar{top:64px;right:6px;max-height:calc(100dvh - 75px)!important}
+}
+@media(max-width:460px){
+ .studio-brand{padding:6px 14px 6px 4px}
+ .studio-brand h1{font-size:12px}
+ .studio-controls .connection,.studio-controls .studio-action{padding:5px 4px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
