@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 工作室｜Workstudio</title>
+<link rel="stylesheet" href="/workstudio/studio.css">
+</head>
+<body>
+<div class="studio-shell">
+<header class="studio-topbar">
+  <div class="studio-brand"><span class="studio-mark" aria-hidden="true">✦</span><div><div class="studio-eyebrow">OPENCLAW · AI WORKSTUDIO</div><h1>AI 工作室</h1><p>從工作室場景觀察真實團隊狀態</p></div></div>
+  <div class="studio-controls"><span class="connection" id="connection">連線中</span><a class="overview-link" href="/workstudio/">管理總覽 ↗</a></div>
+</header>
+<main class="studio-layout">
+  <section class="world-panel" aria-label="互動工作室">
+    <div class="world-toolbar"><div><span class="panel-eyebrow">INTERACTIVE OFFICE</span><h2>團隊工作室</h2></div><p id="worldSummary">正在取得 Agent 清單…</p></div>
+    <nav class="team-filter" id="teamFilters" aria-label="依團隊篩選"></nav>
+    <div class="world-scroll" tabindex="0" aria-label="可水平捲動的工作室場景">
+      <div class="world-stage" id="worldStage">
+        <img class="office-art" src="/workstudio/office-scene.svg" alt="靜態繪製的工作室桌椅與區域背景">
+        <div class="zone-label zone-design" id="designZone">設計行銷團隊</div>
+        <div class="zone-label zone-finance" id="financeZone">娃娃機財務團隊</div>
+        <div id="agentPins" class="agent-pins" aria-label="Agent 位置與狀態"></div>
+      </div>
+    </div>
+    <div class="world-foot"><span>選取角色即可查看 Agent 的真實資料</span><span>靜態場景 · 無背景輪詢</span></div>
+  </section>
+  <aside class="studio-sidebar">
+    <section class="side-card detail-card" aria-live="polite">
+      <div class="side-heading"><span class="panel-eyebrow">AGENT PROFILE</span><h2>角色資訊</h2></div>
+      <div id="agentDetail" class="detail-content"><p class="muted">點選場景中的 Agent 查看詳細資訊。</p></div>
+    </section>
+    <section class="side-card">
+      <div class="side-heading"><span class="panel-eyebrow">TEAM STATUS</span><h2>團隊概況</h2></div>
+      <div id="teamSummary" class="team-summary"><p class="muted">正在讀取團隊資料…</p></div>
+    </section>
+    <section class="side-card">
+      <div class="side-heading"><span class="panel-eyebrow">RECENT SESSIONS</span><h2>最近工作階段</h2></div>
+      <div id="recentSessions" class="recent-sessions"><p class="muted">目前尚無資料。</p></div>
+    </section>
+  </aside>
+</main>
+<footer class="studio-footer">此介面僅顯示已取得的真實 Agent 與 Session 資料；場景人物固定不代表正在執行任務。</footer>
+</div>
+<script src="/workstudio/studio.js" defer></script>
+</body>
+</html>
