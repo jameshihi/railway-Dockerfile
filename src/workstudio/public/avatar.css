@@ -40,3 +40,10 @@
     animation: none;
   }
 }
+
+/* Keep the large coordinator portrait inside its card rather than above its top border. */
+@media (min-width: 761px) {
+  .agent-coordinator .agent-main::before {
+    top: calc(50% + 36px);
+  }
+}
