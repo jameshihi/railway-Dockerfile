@@ -5,20 +5,9 @@ let registry={teams:{},agents:{}};
 let roster=[],sessions=[],selection=null,teamFilter="all",source=null;
 let activeView="workroom";
 const decisionDefault="目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。";
-function toggleMobilePanel(open){
- const sidebar=el("studioSidebar"),backdrop=el("mobileBackdrop");
- const mobile=window.matchMedia("(max-width: 780px)").matches;
- sidebar.classList.toggle("hud-open",open);
- sidebar.classList.toggle("mobile-open",open&&mobile);
- backdrop.hidden=!(open&&mobile);
- document.body.classList.toggle("mobile-panel-open",open&&mobile);
- el("openProfile").setAttribute("aria-expanded",String(open));
-}
-function focusPanel(view){
- const ids={profile:"profilePanel",teams:"teamPanel",tasks:"decisionPanel",settings:"decisionPanel"};
- for(const id of ["profilePanel","teamPanel","decisionPanel"]){
-  el(id).hidden=id!==ids[view];
- }
+// UI is part of the same scene, not a viewport-fixed drawer.
+function toggleMobilePanel(_open){
+ el("openProfile").setAttribute("aria-expanded","true");
 }
 function setActiveView(view){
  activeView=view;
@@ -28,19 +17,24 @@ function setActiveView(view){
   if(current)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current");
  });
 }
+function sceneGoTo(id){
+ const root=el("worldStage").closest(".world-scroll"),target=el(id);
+ if(!root||!target)return;
+ const area=root.getBoundingClientRect(),box=target.getBoundingClientRect();
+ const nextLeft=root.scrollLeft+box.left-area.left;
+ const nextTop=root.scrollTop+box.top-area.top;
+ root.scrollTo({left:Math.max(0,nextLeft-20),top:Math.max(0,nextTop-18),behavior:"auto"});
+}
 function showPanel(view){
- if(view==="workroom"){setActiveView("workroom");toggleMobilePanel(false);return;}
- const target=view==="teams"?"teamPanel":view==="records"?"activityPanel":view==="profile"?"profilePanel":"decisionPanel";
- setActiveView(view==="profile"?"workroom":view);
  if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
  if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
- if(view==="records"){toggleMobilePanel(false);el("chatBoard").scrollIntoView({block:"start",inline:"nearest"});return;}
- focusPanel(view);
- toggleMobilePanel(true);
- el("studioSidebar").scrollTop=0;
+ const target={workroom:"officeFloor",profile:"profilePanel",teams:"teamPanel",
+   tasks:"decisionPanel",settings:"decisionPanel",records:"chatBoard"}[view]||"officeFloor";
+ setActiveView(view==="profile"?"workroom":view);
+ sceneGoTo(target);
 }
 function openDrawer(mode){showPanel(mode==="agent"?"profile":mode==="sessions"?"records":"teams");}
-function closeDrawer(){toggleMobilePanel(false);}
+function closeDrawer(){setActiveView("workroom");}
 function toggleActivity(){
  const panel=el("activityPanel"),button=el("activityToggle");
  const collapsed=panel.classList.toggle("collapsed");
