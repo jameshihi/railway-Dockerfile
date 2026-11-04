@@ -5,6 +5,44 @@ let registry={teams:{},agents:{}};
 let roster=[],sessions=[],selection=null,teamFilter="all",source=null;
 function safeAvatar(path){return typeof path==="string" && /^\/workstudio\/assets\/[a-zA-Z0-9_.-]+\.(png|webp|jpg|jpeg|svg)$/.test(path)?path:FALLBACK_AVATAR;}
 function mk(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
+/* Default avatars are static character illustrations. Explicit registry.avatar paths override them. */
+const CHARACTER_PALETTES=[
+ ["#e49e6d","#563b4b","#b95457","#fff0d8"],["#d9a684","#493647","#5e8b9b","#fff3d6"],
+ ["#e7b190","#ad7440","#9573a3","#fff0dc"],["#c98b6e","#2c384b","#5b967e","#ffe8cf"],
+ ["#dd997d","#744a3a","#d1824b","#fff1dc"],["#d8a18a","#454f73","#6d89b7","#fff2de"],
+ ["#edaf85","#465c5e","#a36d6f","#fcebd8"],["#c99079","#493a53","#698a71","#ffe5ca"]
+];
+function characterPalette(agentId){let n=0;for(const ch of String(agentId))n=((n*31)+ch.charCodeAt(0))>>>0;return CHARACTER_PALETTES[n%CHARACTER_PALETTES.length];}
+function characterMarkup(agentId){
+ const [skin,hair,shirt,light]=characterPalette(agentId);
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" aria-hidden="true" shape-rendering="crispEdges">
+ <ellipse cx="48" cy="106" rx="26" ry="5" fill="#071422" opacity=".45"/>
+ <path d="M29 84h38v15H29z" fill="${shirt}"/><path d="M35 94h10v12H31V96zM53 94h10v12H51z" fill="#293d52"/>
+ <path d="M25 68h46v27H25z" fill="${shirt}"/><path d="M25 70h8v24h-8zM63 70h8v24h-8z" fill="#182e40" opacity=".3"/>
+ <path d="M19 74h9v19h-9zM68 74h9v19h-9z" fill="${skin}"/>
+ <path d="M42 67h12v11H42z" fill="${skin}"/><path d="M35 72l13 8 13-8" fill="none" stroke="${light}" stroke-width="3"/>
+ <path d="M25 26h46v30H25z" fill="${hair}"/><path d="M29 30h38v38H29z" fill="${skin}"/>
+ <path d="M26 24h44v12H26zM23 34h11v16H23zM65 34h9v16h-9z" fill="${hair}"/>
+ <path d="M32 20h34v9H32zM40 15h20v7H40z" fill="${hair}"/>
+ <path d="M27 47h6v11h-6zM64 47h6v11h-6z" fill="${skin}"/>
+ <path d="M35 46h9v5h-9zM53 46h9v5h-9z" fill="#263442"/><path d="M39 46h3v3h-3zM57 46h3v3h-3z" fill="#ffffff"/>
+ <path d="M44 59h10v3H44z" fill="#a46c67"/><path d="M33 54h6v3h-6zM59 54h6v3h-6z" fill="#d98d84" opacity=".6"/>
+ <path d="M29 29h8v8h-8zM59 29h8v8h-8z" fill="${hair}"/>
+ <path d="M25 69h46" fill="none" stroke="#162f3b" stroke-width="3"/>
+ </svg>`;
+}
+function characterNode(agent,cls){
+ const conf=registry.agents?.[agent.agentId]||{};
+ const wrap=mk("span",cls+" character-portrait");
+ if(conf.avatar && safeAvatar(conf.avatar)!==FALLBACK_AVATAR){
+   const img=mk("img","character-custom");img.src=safeAvatar(conf.avatar);img.alt="";
+   img.onerror=()=>{img.remove();wrap.innerHTML=characterMarkup(agent.agentId);};
+   wrap.append(img);
+ }else{wrap.innerHTML=characterMarkup(agent.agentId);}
+ wrap.setAttribute("aria-hidden","true");
+ return wrap;
+}
+
 function stamp(s){for(const raw of [s.lastInteractionAt,s.lastActivityAt,s.updatedAt,s.lastMessageAt,s.createdAt]){if(raw==null)continue;const n=typeof raw==="number"?raw:Date.parse(raw);if(Number.isFinite(n))return n;}return null;}
 function formatTime(t){if(!t)return "尚無紀錄";const n=new Date(t);return isNaN(n.getTime())?"未提供":new Intl.DateTimeFormat("zh-TW",{timeZone:"Asia/Taipei",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).format(n);}
 function agentForSession(s){return s.agentId||/^agent:([^:]+):/.exec(String(s.key||""))?.[1]||null;}
@@ -19,9 +57,9 @@ function renderDetail(){
  const root=el("agentDetail");root.replaceChildren();
  const a=roster.find(a=>a.agentId===selection);
  if(!a){root.append(mk("p","muted","點選場景中的 Agent 查看詳細資訊。"));return;}
- const identity=mk("div","detail-identity");const avatar=mk("img","detail-avatar");avatar.src=safeAvatar(registry.agents?.[a.agentId]?.avatar);avatar.alt="";avatar.onerror=()=>{if(!avatar.src.endsWith(FALLBACK_AVATAR))avatar.src=FALLBACK_AVATAR;};const names=mk("div");names.append(mk("div","detail-name",a.name||a.agentId),mk("div","detail-sub",a.agentId));identity.append(avatar,names);root.append(identity,mk("span","detail-state",state(a)));
+ const identity=mk("div","detail-identity");const avatar=characterNode(a,"detail-avatar");const names=mk("div");names.append(mk("div","detail-name",a.name||a.agentId),mk("div","detail-sub",a.agentId));identity.append(avatar,names);root.append(identity,mk("span","detail-state",state(a)));
  const dl=mk("dl","detail-rows");const info=activities(a.agentId);
- row(dl,"團隊",teamName(agentTeam(a)));row(dl,"角色",agentRole(a)==="coordinator"?"主控 Agent":"團隊成員");row(dl,"模型",a.model||"未提供");row(dl,"工作區",a.workspace||"未提供");row(dl,"最後互動",formatTime(info.interactionAt));row(dl,"最後自動化",formatTime(info.automationAt));row(dl,"互動階段",String(info.interactions.length));row(dl,"自動化階段",String(info.automations.length));
+ row(dl,"團隊",teamName(agentTeam(a)));row(dl,"角色",agentRole(a)==="coordinator"?"主控 Agent":"團隊成員");row(dl,"模型",a.model||"未提供");row(dl,"工作區",a.workspace||"未提供");row(dl,"最後互動",formatTime(info.interactionAt));row(dl,"最後自動化",formatTime(info.automationAt));row(dl,"互動工作階段",String(info.interactions.length));row(dl,"自動化工作階段",String(info.automations.length));
  root.append(dl);
 }
 function renderPins(){
@@ -31,7 +69,7 @@ function renderPins(){
  if(teamFilter!=="all"&&agentTeam(a)!==teamFilter)continue;
  const pin=mk("button","agent-pin "+(a.status==="working"?"working":a.status==="error"?"error":"idle")+(agentRole(a)==="coordinator"?" coordinator":"")+(selection===a.agentId?" selected":""));
  pin.type="button";pin.style.left=Math.max(5,Math.min(95,pos.x))+"%";pin.style.top=Math.max(12,Math.min(93,pos.y))+"%";pin.setAttribute("aria-label",`${a.name||a.agentId}，${teamName(agentTeam(a))}，${state(a)}，點選查看詳細資訊`);
- const avatar=mk("img","pin-avatar");avatar.src=safeAvatar(conf.avatar);avatar.alt="";avatar.loading="lazy";avatar.onerror=()=>{if(!avatar.src.endsWith(FALLBACK_AVATAR))avatar.src=FALLBACK_AVATAR;};
+ const avatar=characterNode(a,"pin-avatar");
  pin.append(avatar,mk("span","pin-name",a.name||a.agentId));const stat=mk("span","pin-status");stat.append(mk("i","pin-dot"),document.createTextNode(state(a)));pin.append(stat);
  if(agentRole(a)==="coordinator")pin.append(mk("span","pin-badge","主控"));
  pin.addEventListener("click",()=>{selection=a.agentId;renderPins();renderDetail();});
