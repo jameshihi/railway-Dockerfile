@@ -7,9 +7,18 @@ let activeView="workroom";
 const decisionDefault="目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。";
 function toggleMobilePanel(open){
  const sidebar=el("studioSidebar"),backdrop=el("mobileBackdrop");
- sidebar.classList.toggle("mobile-open",open);
- backdrop.hidden=!open;
- document.body.classList.toggle("mobile-panel-open",open);
+ const mobile=window.matchMedia("(max-width: 780px)").matches;
+ sidebar.classList.toggle("hud-open",open);
+ sidebar.classList.toggle("mobile-open",open&&mobile);
+ backdrop.hidden=!(open&&mobile);
+ document.body.classList.toggle("mobile-panel-open",open&&mobile);
+ el("openProfile").setAttribute("aria-expanded",String(open));
+}
+function focusPanel(view){
+ const ids={profile:"profilePanel",teams:"teamPanel",tasks:"decisionPanel",settings:"decisionPanel"};
+ for(const id of ["profilePanel","teamPanel","decisionPanel"]){
+  el(id).hidden=id!==ids[view];
+ }
 }
 function setActiveView(view){
  activeView=view;
@@ -26,8 +35,9 @@ function showPanel(view){
  if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
  if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
  if(view==="records"){toggleMobilePanel(false);el("activityPanel").classList.remove("collapsed");el("activityToggle").textContent="−";el("activityToggle").setAttribute("aria-expanded","true");el("activityToggle").setAttribute("aria-label","收合活動日誌");el("activityToggle").focus();return;}
+ focusPanel(view);
  toggleMobilePanel(true);
- if(window.matchMedia("(max-width: 780px)").matches){const panel=el("studioSidebar");const item=el(target);panel.scrollTop=item.offsetTop-panel.offsetTop;}
+ el("studioSidebar").scrollTop=0;
 }
 function openDrawer(mode){showPanel(mode==="agent"?"profile":mode==="sessions"?"records":"teams");}
 function closeDrawer(){toggleMobilePanel(false);}
@@ -40,10 +50,13 @@ function toggleActivity(){
 }
 function initDrawers(){
  document.querySelectorAll(".rail-action").forEach(button=>button.addEventListener("click",()=>showPanel(button.dataset.view)));
+ el("openProfile").addEventListener("click",()=>showPanel("profile"));
  el("openTeams").addEventListener("click",()=>showPanel("teams"));
  el("openSettings").addEventListener("click",()=>showPanel("settings"));
  el("mobileBackdrop").addEventListener("click",closeDrawer);
  el("closeMobilePanel").addEventListener("click",closeDrawer);
+ el("closeInspector").addEventListener("click",closeDrawer);
+ el("worldStage").addEventListener("click",(event)=>{if(!event.target.closest(".agent-pin"))closeDrawer();});
  el("activityToggle").addEventListener("click",toggleActivity);
  document.addEventListener("keydown",event=>{if(event.key==="Escape")closeDrawer();});
 }
