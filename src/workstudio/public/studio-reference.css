@@ -1,0 +1,57 @@
+/* Reference-style 2D Workstudio: a single scene with fixed game-like controls.
+   This file overrides previous dashboard/immersive layout styles without touching Gateway. */
+:root{--ws-panel:#0e1928;--ws-line:#465d70;--ws-teal:#47d2be;--ws-ink:#eef6fc}
+html,body{min-height:100%;margin:0;background:#0c1623;color:var(--ws-ink)}
+.studio-shell{width:100%;max-width:none;height:100dvh;min-height:660px;margin:0;padding:0;display:grid;grid-template-columns:92px minmax(0,1fr) 315px;grid-template-rows:78px minmax(0,1fr);gap:0;overflow:hidden;background:#0b1523}
+.studio-topbar{position:relative;top:auto;right:auto;left:auto;grid-column:1/-1;grid-row:1;margin:0;border:0;border-bottom:3px solid #3b5269;border-radius:0;box-shadow:0 3px 8px #0006;padding:10px 19px;z-index:11;background:linear-gradient(180deg,#1a273b,#101d2e);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.studio-brand{gap:12px}.studio-brand .studio-mark{width:42px;height:42px;border:2px solid #e8ac7c;background:#66443f;color:#ffe0ab;font-size:25px;box-shadow:2px 3px 0 #172331;border-radius:5px}
+.studio-brand h1{font-size:clamp(19px,2.1vw,28px);font-weight:950;letter-spacing:.025em;color:#faf5ff;text-shadow:2px 3px 0 #42375e;line-height:1.05}
+.studio-brand .studio-eyebrow{font-size:9px;letter-spacing:.1em;color:#bac6db;margin-bottom:4px}
+.studio-controls{display:flex;align-items:center;gap:9px}
+.connection{border:1px solid #3e5a72;border-radius:6px;background:#17263b;color:#c4d9e5;padding:9px 13px;font-weight:800;white-space:nowrap;font-size:12px}
+.connection.online{border-color:#317e69;background:#123f36;color:#8cebc0}.connection.error{color:#ffa9a2}
+.studio-action{min-height:37px;border:1px solid #476277;background:#203048;color:#e6edf8;box-shadow:0 3px 0 #0b1320;padding:8px 13px;border-radius:5px;font-size:12px;font-weight:800}
+.studio-action:hover,.studio-action:focus-visible{background:#2c4861;border-color:#80cabb}
+.studio-rail{grid-column:1;grid-row:2;z-index:5;background:linear-gradient(90deg,#132239,#0c182a);border-right:2px solid #3b5469;display:flex;flex-direction:column;gap:5px;align-items:stretch;padding:14px 5px;overflow-y:auto}
+.rail-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:77px;width:100%;border:1px solid transparent;border-radius:7px;background:transparent;color:#afc1d3;font-size:12px;font-weight:750;cursor:pointer;padding:8px 2px}
+.rail-icon{font-size:29px;line-height:1;min-height:30px;color:#9bb5cf}
+.rail-action.active,.rail-action:hover,.rail-action:focus-visible{border-color:#346e89;background:#1b3b57;color:#92eaff}
+.rail-action.active .rail-icon{color:#8beaff}
+.studio-layout{display:contents}
+.world-panel{grid-column:2;grid-row:2;min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;box-shadow:none;background:#342936}
+.world-scroll{flex:1;min-height:0;overflow:auto;background:#3b3036;scrollbar-color:#667789 #192638}
+.world-stage{position:relative;width:100%;min-width:950px;min-height:670px;aspect-ratio:1440/850;background:#6b4a39}
+.office-art{inset:0;width:100%;height:100%;object-fit:fill;image-rendering:auto}
+.world-stage::after{box-shadow:inset 0 0 35px #08132190}
+.zone-label{top:6%;z-index:2;pointer-events:none;background:#182333ed;border:2px solid #c49a65;color:#ffdfa4;box-shadow:3px 4px 0 #111722;border-radius:5px;font-size:12px}
+.zone-design{left:3%}.zone-finance{left:71%}
+.agent-pins{z-index:3}
+.agent-pin,.agent-pin.coordinator{width:85px;min-height:108px;transform:translate(-50%,-70%);background:transparent;border:0;box-shadow:none;padding:0}
+.agent-pin:hover,.agent-pin:focus-visible,.agent-pin.selected{transform:translate(-50%,-70%);background:transparent;border:0;box-shadow:none}
+.pin-avatar{width:79px;height:87px;filter:drop-shadow(3px 4px 1px #0a1423bd)}
+.pin-name{font-size:10px;max-width:112px;padding:3px 6px;margin-top:-10px;border:2px solid #8f9bab;background:#132336f2;color:#fff;box-shadow:2px 3px 0 #0b1421;border-radius:4px}
+.agent-pin.selected .pin-name{border-color:#8af1d1;background:#1c514e}
+.pin-status{background:#192739e9;border:1px solid #5a7384;color:#d5e7ea;border-radius:0 0 4px 4px;padding:2px 5px}
+.pin-badge{right:-10px;top:0;background:#8a623d;color:#ffeabf;border:1px solid #e2ad63}
+.studio-sidebar{grid-column:3;grid-row:2;display:flex;flex-direction:column;min-height:0;height:100%;gap:10px;padding:10px;background:#101b2d;border-left:3px solid #3b5469;overflow-y:auto;scrollbar-color:#52667b #111e2c}
+.side-card{flex:0 0 auto;border:2px solid #435970;border-radius:7px;box-shadow:0 4px 0 #0b131e;background:linear-gradient(180deg,#152335,#0d1828)}
+.side-heading{padding:11px 14px 9px;background:#1a2a40;border-bottom:2px solid #435970}
+.side-heading h2{font-size:16px;color:#f3f5fe;margin:2px 0;text-shadow:none}.side-heading .panel-eyebrow{font-size:9px;color:#82abc3}
+.detail-content,.team-summary,.decision-body{padding:12px 13px}
+.detail-identity{padding:0 0 12px;border:0;box-shadow:none;background:none}.detail-avatar{width:66px;height:73px}.detail-name{font-size:20px;color:#fff}.detail-sub{color:#9ab3c9}
+.detail-row,.team-row,.session-row{border-bottom:1px solid #33475b}.detail-row dt,.team-row small{color:#92a8bc}.detail-row dd,.team-title,.session-row{color:#e5eff8}
+.detail-state{border:1px solid #448c7a;background:#17483e;color:#adf5d1}
+.team-num,.session-meta{color:#70d4b7}
+.decision-body .muted{font-size:11px;line-height:1.7;color:#a9bbca}
+.activity-overlay{position:absolute;z-index:4;left:26%;right:4%;bottom:2%;height:min(28%,220px);min-height:144px;background:#0e1a2de8;border:2px solid #445e7b;border-radius:8px;box-shadow:0 6px 20px #06101c99;overflow:hidden;display:flex;flex-direction:column}
+.overlay-heading{padding:10px 14px 8px;display:flex;align-items:baseline;gap:10px;background:#17263bcf;border-bottom:1px solid #364c63;color:#f0f5fb;font-size:13px}
+.overlay-heading small{color:#9eb1c4;font-size:10px}
+.activity-overlay .recent-sessions{overflow-y:auto;padding:3px 14px 7px;min-height:0;scrollbar-color:#536c87 #111c2c}
+.activity-overlay .session-row{padding:7px 0;font-size:11px}.activity-overlay .session-meta{font-size:9px;margin-top:3px}
+.studio-hint{position:relative;left:auto;bottom:auto;max-width:none;border:0;border-top:1px solid #526074;border-radius:0;padding:7px 12px;display:flex;justify-content:space-between;background:#18273b;color:#b0c3d6;box-shadow:none;font-size:10px;pointer-events:auto}
+.team-filter[hidden]{display:none}
+.mobile-backdrop[hidden]{display:none!important}.mobile-panel-controls{display:none}
+@media(max-width:1100px){.studio-shell{grid-template-columns:70px minmax(0,1fr) 280px}.studio-rail{padding:8px 3px}.rail-action{min-height:66px;font-size:10px}.rail-icon{font-size:25px}.zone-label{font-size:11px}.studio-sidebar{padding:7px;gap:8px}.activity-overlay{left:16%;right:3%}}
+@media(max-width:780px){.studio-shell{height:100dvh;min-height:0;grid-template-columns:58px minmax(0,1fr);grid-template-rows:66px minmax(0,1fr)}.studio-topbar{padding:7px 9px}.studio-brand .studio-mark{width:31px;height:31px;font-size:20px}.studio-brand h1{font-size:17px}.studio-brand .studio-eyebrow{display:none}.studio-controls{gap:4px}.connection{font-size:10px;padding:6px}.studio-action{font-size:10px;padding:6px;min-height:30px}.studio-rail{grid-row:2}.rail-action{min-height:57px}.rail-icon{font-size:22px}.world-panel{grid-column:2}.world-stage{min-width:950px}.studio-sidebar{display:none;position:fixed;z-index:22;top:66px;right:0;bottom:0;width:min(350px,88vw);height:auto;box-shadow:-10px 0 25px #07121bcc}.studio-sidebar.mobile-open{display:flex}.mobile-backdrop:not([hidden]){position:fixed;inset:66px 0 0;z-index:20;background:#050c16a8}.mobile-panel-controls{position:fixed;z-index:23;bottom:8px;right:8px;display:none}.studio-sidebar.mobile-open~.mobile-panel-controls{display:block}.mobile-panel-controls button{background:#203349;color:#fff;border:1px solid #65869e;border-radius:5px;padding:8px 12px}.activity-overlay{left:8%;right:5%;bottom:2%;height:190px}}
+@media(max-width:450px){.studio-controls .studio-action{font-size:10px}.studio-brand h1{font-size:14px}.studio-brand{gap:6px}.studio-rail{padding:6px 2px}.rail-action{font-size:9px}.activity-overlay{height:155px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
