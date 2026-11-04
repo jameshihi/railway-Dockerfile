@@ -5,7 +5,21 @@ let registry={teams:{},agents:{}};
 let roster=[],sessions=[],selection=null,teamFilter="all",source=null;
 let activeView="workroom";
 const decisionDefault="目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。";
-// Navigation focuses an area of the same scrolling 2D room; no viewport-fixed drawer.
+function toggleMobilePanel(open){
+ const sidebar=el("studioSidebar"),backdrop=el("mobileBackdrop");
+ const mobile=window.matchMedia("(max-width: 780px)").matches;
+ sidebar.classList.toggle("hud-open",open);
+ sidebar.classList.toggle("mobile-open",open&&mobile);
+ backdrop.hidden=!(open&&mobile);
+ document.body.classList.toggle("mobile-panel-open",open&&mobile);
+ el("openProfile").setAttribute("aria-expanded",String(open));
+}
+function focusPanel(view){
+ const ids={profile:"profilePanel",teams:"teamPanel",tasks:"decisionPanel",settings:"decisionPanel"};
+ for(const id of ["profilePanel","teamPanel","decisionPanel"]){
+  el(id).hidden=id!==ids[view];
+ }
+}
 function setActiveView(view){
  activeView=view;
  document.querySelectorAll(".rail-action").forEach(button=>{
@@ -15,17 +29,18 @@ function setActiveView(view){
  });
 }
 function showPanel(view){
+ if(view==="workroom"){setActiveView("workroom");toggleMobilePanel(false);return;}
+ const target=view==="teams"?"teamPanel":view==="records"?"activityPanel":view==="profile"?"profilePanel":"decisionPanel";
+ setActiveView(view==="profile"?"workroom":view);
  if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
  if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
- const ids={
-  workroom:"officeFloor",profile:"profilePanel",teams:"teamPanel",
-  tasks:"decisionPanel",settings:"decisionPanel",records:"chatBoard"
- };
- setActiveView(view==="profile"?"workroom":view);
- el(ids[view]||"officeFloor").scrollIntoView({behavior:"auto",block:"nearest",inline:"nearest"});
+ if(view==="records"){toggleMobilePanel(false);el("chatBoard").scrollIntoView({block:"start",inline:"nearest"});return;}
+ focusPanel(view);
+ toggleMobilePanel(true);
+ el("studioSidebar").scrollTop=0;
 }
 function openDrawer(mode){showPanel(mode==="agent"?"profile":mode==="sessions"?"records":"teams");}
-function closeDrawer(){setActiveView("workroom");}
+function closeDrawer(){toggleMobilePanel(false);}
 function toggleActivity(){
  const panel=el("activityPanel"),button=el("activityToggle");
  const collapsed=panel.classList.toggle("collapsed");
