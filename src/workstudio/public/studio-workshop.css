@@ -1,0 +1,52 @@
+/* Unified pixel-workshop visual language. Static illustration only, no animations or timers. */
+:root{--ink:#fff4e5;--muted:#ccbca7;--line:#7d6250;--panel:#211e2a;--highlight:#88d5bc;--warm:#edbf84;font-family:ui-sans-serif,system-ui,"Noto Sans TC",sans-serif}
+body{background:#141b28;color:var(--ink);background-image:linear-gradient(90deg,#1b2434 1px,transparent 1px),linear-gradient(#1b2434 1px,transparent 1px);background-size:32px 32px}
+.studio-topbar,.world-panel,.side-card{border-radius:7px;border:3px solid #634d45;box-shadow:0 5px 0 #0b111b,0 12px 20px #0007;background:#252434}
+.studio-topbar{background:linear-gradient(180deg,#3a3440,#262637);border-color:#977253;align-items:center}
+.studio-mark{background:#a96955;color:#ffe2a2;border:3px solid #e6af6d;box-shadow:4px 4px 0 #332c37;border-radius:5px}
+.studio-brand h1{font-weight:900;letter-spacing:.05em;text-shadow:3px 3px 0 #263347}
+.studio-eyebrow,.panel-eyebrow{color:#e4b782}
+.studio-brand p,.muted{color:#c4b4a4}
+.connection{background:#332d37;border:2px solid #816351;border-radius:4px;color:#e7c99e;font-weight:800}
+.connection.online{background:#24483c;color:#9df3be;border-color:#4c9f76}
+.world-panel{background:#312d38}
+.world-toolbar,.side-heading{background:linear-gradient(180deg,#564239,#3a3339);border-bottom:3px solid #a47a54}
+.world-toolbar h2,.side-heading h2{font-weight:900;color:#ffeed7;text-shadow:2px 2px 0 #29303c}
+.world-toolbar p{color:#e0c2a5}
+.team-filter{background:#342c34;border-bottom:3px solid #72574a;padding:11px 15px}
+.filter-btn{border:2px solid #6b5e53;background:#302c36;border-radius:5px;color:#e6ccaa;box-shadow:2px 2px 0 #161923;font-weight:700}
+.filter-btn[aria-pressed="true"]{background:#365a4c;color:#d9f7dc;border-color:#8dc6a0}
+.world-scroll{background:#3e3435;scrollbar-color:#a27a57 #2b2430}
+.world-stage::after{box-shadow:inset 0 0 38px #0c15197a}
+.zone-label{border-radius:5px;background:#2d2a30ed;box-shadow:4px 4px 0 #181b24;border-color:#d4a86f;color:#ffe4b6}
+.world-foot{background:#3a3135;border-top:3px solid #7f5d48;color:#d7bea6}
+.studio-sidebar{gap:14px}
+.side-card{background:linear-gradient(180deg,#332d37,#282732)}
+.detail-content,.team-summary,.recent-sessions{padding:15px}
+.detail-identity{background:#3c343c;padding:10px;border:2px solid #6b5348;box-shadow:3px 3px 0 #1a1b25;align-items:center}
+.detail-name{color:#fff1d8}
+.detail-sub{color:#cba88e}
+.detail-state{border:2px solid #528a6e;background:#2c5347;color:#b9f5c7;border-radius:4px}
+.detail-row,.team-row,.session-row{border-bottom:2px dashed #655449}
+.detail-row dt,.team-row small{color:#bca28e}
+.detail-row dd,.team-title,.session-row{color:#f1dfc8}
+.team-num,.session-meta{color:#a8dfbc}
+.studio-footer{color:#bba58f}
+.agent-pin,.agent-pin.coordinator{width:96px;min-height:108px;display:flex;align-items:center;gap:0;padding:0;border:0;box-shadow:none;background:transparent;transform:translate(-50%,-54%);transition:none}
+.agent-pin:hover,.agent-pin:focus-visible,.agent-pin.selected{border:0;background:transparent;box-shadow:none;transform:translate(-50%,-54%)}
+.agent-pin:focus-visible{outline:3px dashed #ffe29e;outline-offset:5px}
+.pin-avatar{width:76px;height:83px;border:none;border-radius:0;object-fit:contain;background:none;filter:drop-shadow(3px 5px 1px #12192199)}
+.agent-pin.coordinator .pin-avatar{border:0}
+.character-portrait{display:inline-flex;align-items:center;justify-content:center;overflow:visible;flex-shrink:0}
+.character-portrait svg,.character-custom{width:100%;height:100%;display:block;object-fit:contain;image-rendering:pixelated}
+.pin-name{display:block;max-width:110px;font-size:10px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff8e9;background:#25242deF;border:2px solid #d1a478;border-radius:4px;padding:3px 7px;box-shadow:3px 3px 0 #111821;text-shadow:1px 1px 0 #141a24;margin-top:-5px;position:relative;z-index:1}
+.agent-pin.selected .pin-name{background:#3c5a50;border-color:#b9f4bd}
+.pin-status{color:#e5dfd0;background:#292b34de;border:1px solid #8b7762;border-radius:0 0 4px 4px;padding:2px 6px;font-size:9px}
+.pin-dot{width:6px;height:6px}
+.pin-badge{right:-10px;top:0;background:#8c6543;color:#fff0c6;border:1px solid #dcb584;border-radius:3px;font-size:8px}
+.detail-avatar{width:68px;height:78px;background:transparent;border:0;border-radius:0}
+.detail-avatar svg{filter:drop-shadow(2px 4px 0 #17202b)}
+.unplaced-agents{margin-top:15px}
+.unplaced-agents .filter-btn{margin:3px}
+@media(max-width:620px){.studio-topbar{padding:12px}.agent-pin{width:88px}.pin-avatar{height:76px;width:70px}.zone-label{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
