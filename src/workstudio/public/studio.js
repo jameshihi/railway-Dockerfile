@@ -3,6 +3,45 @@ const el=(id)=>document.getElementById(id);
 const FALLBACK_AVATAR="/workstudio/assets/default-agent.png.png";
 let registry={teams:{},agents:{}};
 let roster=[],sessions=[],selection=null,teamFilter="all",source=null;
+let drawerMode=null, previousFocus=null;
+function openDrawer(mode){
+ drawerMode=mode;
+ previousFocus=document.activeElement;
+ const titles={agent:["AGENT","角色資訊"],teams:["TEAM","團隊概況"],sessions:["ACTIVITY","最近工作階段"]};
+ const [eyebrow,title]=titles[mode]||titles.agent;
+ el("drawerEyebrow").textContent=eyebrow;
+ el("drawerTitle").textContent=title;
+ el("drawerAgent").hidden=mode!=="agent";
+ el("drawerTeams").hidden=mode!=="teams";
+ el("drawerSessions").hidden=mode!=="sessions";
+ el("studioDrawer").hidden=false;
+ el("drawerBackdrop").hidden=false;
+ document.body.classList.add("drawer-open");
+ el("closeDrawer").focus();
+}
+function closeDrawer(){
+ drawerMode=null;el("studioDrawer").hidden=true;el("drawerBackdrop").hidden=true;
+ document.body.classList.remove("drawer-open");
+ if(previousFocus?.isConnected)previousFocus.focus();
+ previousFocus=null;
+}
+function initDrawers(){
+ el("openTeams").addEventListener("click",()=>openDrawer("teams"));
+ el("openSessions").addEventListener("click",()=>openDrawer("sessions"));
+ el("closeDrawer").addEventListener("click",closeDrawer);
+ el("drawerBackdrop").addEventListener("click",closeDrawer);
+ window.addEventListener("keydown",event=>{
+  if(drawerMode&&event.key==="Escape"){event.preventDefault();closeDrawer();}
+  if(drawerMode&&event.key==="Tab"){
+   const focusables=[...el("studioDrawer").querySelectorAll('button:not([disabled]),a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(node=>node.getClientRects().length>0);
+   const first=focusables[0],last=focusables[focusables.length-1];
+   if(!first)return;
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  }
+ });
+}
+
 function safeAvatar(path){return typeof path==="string" && /^\/workstudio\/assets\/[a-zA-Z0-9_.-]+\.(png|webp|jpg|jpeg|svg)$/.test(path)?path:FALLBACK_AVATAR;}
 function mk(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
 /* Default avatars are static character illustrations. Explicit registry.avatar paths override them. */
@@ -72,7 +111,7 @@ function renderPins(){
  const avatar=characterNode(a,"pin-avatar");
  pin.append(avatar,mk("span","pin-name",a.name||a.agentId));const stat=mk("span","pin-status");stat.append(mk("i","pin-dot"),document.createTextNode(state(a)));pin.append(stat);
  if(agentRole(a)==="coordinator")pin.append(mk("span","pin-badge","主控"));
- pin.addEventListener("click",()=>{selection=a.agentId;renderPins();renderDetail();});
+ pin.addEventListener("click",()=>{selection=a.agentId;renderPins();renderDetail();openDrawer("agent");});
  root.append(pin);
  }
 }
@@ -84,7 +123,7 @@ function renderTeams(){
  const root=el("teamSummary");root.replaceChildren();const ids=[...new Set(roster.map(agentTeam))];
  for(const id of ids){const rows=roster.filter(a=>agentTeam(a)===id);const w=mk("div","team-row");const text=mk("div");text.append(mk("span","team-title",teamName(id)),mk("small","",rows.some(a=>a.status==="working")?"有 Agent 執行中":"目前無執行中 Agent"));w.append(text,mk("span","team-num",rows.length+" 位"));root.append(w);}
  const unplaced=roster.filter(a=>!registry.agents?.[a.agentId]?.scene);
- if(unplaced.length){const block=mk("div","unplaced-agents");block.append(mk("p","muted","尚未配置場景位置的 Agent（仍可查看）："));for(const a of unplaced){const b=mk("button","filter-btn",a.name||a.agentId);b.type="button";b.addEventListener("click",()=>{selection=a.agentId;renderDetail();renderPins();});block.append(b);}root.append(block);}
+ if(unplaced.length){const block=mk("div","unplaced-agents");block.append(mk("p","muted","尚未配置場景位置的 Agent（仍可查看）："));for(const a of unplaced){const b=mk("button","filter-btn",a.name||a.agentId);b.type="button";b.addEventListener("click",()=>{selection=a.agentId;renderDetail();renderPins();openDrawer("agent");});block.append(b);}root.append(block);}
  if(!ids.length)root.append(mk("p","muted","尚未收到團隊資料。"));
  el("worldSummary").textContent=`目前 ${ids.length} 組團隊 · ${roster.length} 位 Agent · 點選查看`;
 }
@@ -98,4 +137,5 @@ async function loadRegistry(){try{const response=await fetch("/workstudio/regist
 function connect(){source?.close();source=new EventSource("/workstudio/api/events");const connection=el("connection");source.addEventListener("gateway-state",event=>{try{const data=JSON.parse(event.data||"{}");roster=Array.isArray(data.agents)?data.agents:[];sessions=Array.isArray(data.sessions)?data.sessions:[];connection.textContent=data.connected&&data.subscribed?"已連線":"連線中";connection.className="connection"+(data.connected&&data.subscribed?" online":"");renderAll();}catch{connection.textContent="資料解析失敗";connection.className="connection error";}});source.addEventListener("gateway-error",()=>{connection.textContent="Gateway 錯誤";connection.className="connection error";});source.onerror=()=>{if(document.visibilityState!=="hidden"){connection.textContent="重新連線中";connection.className="connection";}};}
 function disconnect(){if(source){source.close();source=null;}}
 window.addEventListener("pagehide",disconnect);window.addEventListener("beforeunload",disconnect);
+initDrawers();
 loadRegistry().then(connect);
