@@ -1,0 +1,119 @@
+/* The room is a continuous physical scene, not a webpage with floating HUD.
+ * Every UI component is a station within the scrolling floor plan.
+ * Uses the existing office SVG without stretching its underlying Agent coordinates. */
+html,body{margin:0;height:100%;background:#3b2b27}
+.studio-shell{position:relative!important;display:block!important;isolation:isolate;
+ margin:0!important;padding:0!important;width:100%!important;height:100dvh!important;
+ min-height:0!important;max-width:none!important;overflow:hidden!important;
+ background:#3a2b29!important;border:0!important;box-shadow:none!important}
+.studio-layout{position:absolute!important;inset:0!important;display:block!important;pointer-events:none}
+.world-panel{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ overflow:hidden!important;pointer-events:none;background:#3b2a27!important}
+.world-scroll{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ overflow:auto!important;pointer-events:auto;scrollbar-color:#9c7652 #2d2424;scrollbar-width:thin}
+.world-stage{
+ position:relative!important;display:block!important;overflow:visible!important;
+ width:max(100%,1528px)!important;min-width:1528px!important;
+ height:auto!important;min-height:0!important;aspect-ratio:auto!important;
+ background:repeating-linear-gradient(90deg,#604437 0 26px,#624839 26px 52px)!important;
+ border:9px solid #3d2924;box-shadow:inset 0 0 0 4px #b9834b;
+}
+.world-stage::after{content:none!important;display:none!important}
+
+/* Ceiling/header are a real fascia above the furniture rather than overlaying workers. */
+.scene-ceiling{position:relative;height:99px;display:flex;align-items:center;padding:7px 14px;
+ border-bottom:12px ridge #bf8b56;
+ background:linear-gradient(180deg,#5a3b2d,#392c2b 17%,#232c38 45%,#302d34 82%,#704b34);
+ box-shadow:inset 0 4px 0 #efb87869,inset 0 -3px 0 #513123}
+.scene-ceiling::after{content:"";position:absolute;pointer-events:none;bottom:-18px;left:0;right:0;
+ height:7px;background:repeating-linear-gradient(90deg,#f0b469 0 18px,#714a2c 18px 31px,#cc9458 31px 48px);opacity:.65}
+.scene-ceiling .studio-topbar{
+ position:relative!important;top:auto!important;right:auto!important;left:auto!important;
+ bottom:auto!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;margin:0!important;padding:0!important;background:transparent!important;
+ border:0!important;box-shadow:none!important;pointer-events:none;z-index:2}
+.scene-ceiling .studio-brand,.scene-ceiling .studio-controls{pointer-events:auto}
+.scene-ceiling .studio-brand{max-width:480px}
+.scene-ceiling .studio-brand h1{font-size:25px}
+
+/* Office, control station and wall-mounted inspector occupy their OWN floor-plan areas. */
+.scene-main{display:grid;grid-template-columns:88px minmax(1040px,1fr) 325px;align-items:stretch;
+ min-height:0;position:relative;background:#52372e}
+.scene-controls-wall{
+ position:relative;grid-column:1;min-height:0;overflow:hidden;
+ border-right:9px ridge #b17d49;
+ background:
+  repeating-linear-gradient(0deg,transparent 0 38px,#6f4b33 39px 42px),
+  linear-gradient(90deg,#39282a,#4c3530 45%,#322a30);
+ box-shadow:inset 0 0 0 3px #7a5239,inset -10px 0 18px #21182066}
+.scene-controls-wall::after{content:"";position:absolute;bottom:9px;left:12px;right:12px;
+ height:8px;background:#c79457;box-shadow:0 2px 0 #3a2727}
+.scene-controls-wall .studio-rail{
+ position:relative!important;inset:auto!important;top:auto!important;left:auto!important;
+ right:auto!important;bottom:auto!important;width:71px!important;
+ margin:18px auto 14px!important;padding:12px 4px!important;
+ display:flex!important;z-index:2;pointer-events:auto}
+.scene-controls-wall .rail-action{min-height:65px!important}
+
+/* The existing SVG is only the office floor. It no longer has controls sitting on top. */
+.scene-main .office-floor{grid-column:2;position:relative!important;isolation:isolate;
+ width:100%!important;height:auto!important;min-height:0!important;
+ aspect-ratio:1440 / 850!important;overflow:hidden!important;
+ background:#665044;border-right:0}
+.scene-main .office-floor .office-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+.scene-main .office-floor .zone-label{top:5%;z-index:3;pointer-events:none}
+.scene-main .office-floor .zone-design{left:5%}
+.scene-main .office-floor .zone-finance{left:71%}
+.scene-main .office-floor .agent-pins{position:absolute;inset:0;z-index:4;pointer-events:none}
+.scene-main .office-floor .agent-pin{pointer-events:auto}
+
+/* Information is engraved into the room's right wall; no screen-fixed drawer. */
+.world-stage .scene-main .studio-sidebar,
+.world-stage .scene-main .studio-sidebar:not(.hud-open):not(.mobile-open){
+ grid-column:3;position:relative!important;inset:auto!important;
+ top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+ display:flex!important;flex-direction:column!important;gap:11px!important;
+ margin:0!important;padding:12px 11px 22px!important;width:100%!important;height:auto!important;
+ min-height:100%!important;max-height:none!important;max-width:none!important;
+ overflow:visible!important;overscroll-behavior:auto!important;
+ border:0!important;border-left:10px ridge #b7824d!important;border-radius:0!important;
+ box-shadow:inset 7px 0 13px #140e12a8!important;
+ background:
+   repeating-linear-gradient(0deg,#5a3f33 0 42px,#684738 42px 46px,#51392f 46px 88px)!important;
+ pointer-events:auto!important;z-index:1!important}
+.scene-wall-plaque{display:block;padding:10px 7px;margin:1px 0 3px;
+ border:4px ridge #c79257;border-radius:6px;text-align:center;
+ color:#ffe3ae;font-weight:850;font-size:15px;letter-spacing:.07em;
+ background:linear-gradient(180deg,#593628,#18253a 40%,#19263a 75%,#4d3027);
+ box-shadow:inset 0 1px #f1bc75,0 5px 0 #38261e}
+.scene-wall-plaque span{display:block;color:#e2b784;font-size:9px;margin-top:3px;letter-spacing:.15em}
+.scene-main .studio-sidebar .side-card{width:100%;min-width:0;flex:0 0 auto}
+.scene-main .studio-sidebar [hidden]{display:none!important}
+.scene-main .studio-sidebar .inspector-close{display:none!important}
+.scene-main .studio-sidebar .team-filter{display:flex!important;position:static!important;flex-wrap:wrap}
+.scene-main .studio-sidebar .team-filter .filter-btn{max-width:100%}
+.scene-main .studio-sidebar .detail-row{grid-template-columns:75px minmax(0,1fr)}
+.scene-main .studio-sidebar .detail-row dd{overflow-wrap:anywhere}
+
+/* An integrated status rail below the actual room. */
+.scene-status-ledge{display:flex;align-items:center;justify-content:space-between;gap:18px;
+ padding:11px 19px;min-height:42px;color:#f0d8b7;font-size:11px;
+ border-top:10px ridge #b5804a;border-bottom:9px ridge #b27e4a;
+ background:linear-gradient(180deg,#362e33,#1c283a,#312c32);
+ box-shadow:inset 0 2px #efd1a05c}
+.scene-status-ledge span:last-child{color:#c7a889}
+.world-stage>.bulletin-area{position:relative;z-index:1;border-top:0!important}
+.activity-overlay[hidden]{display:none!important}
+.mobile-backdrop,.mobile-panel-controls{display:none!important}
+@media(max-width:780px){
+ .world-stage{width:1528px!important;min-width:1528px!important}
+ .scene-main{grid-template-columns:88px minmax(1040px,1fr) 325px!important}
+ .scene-ceiling{height:99px!important}
+ .scene-ceiling .studio-brand h1{font-size:23px}
+ .scene-controls-wall .studio-rail{width:71px!important;top:auto!important;left:auto!important}
+ .world-stage .scene-main .studio-sidebar,
+ .world-stage .scene-main .studio-sidebar:not(.hud-open):not(.mobile-open){
+  position:relative!important;inset:auto!important;width:100%!important;max-height:none!important}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
