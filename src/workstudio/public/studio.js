@@ -3,45 +3,42 @@ const el=(id)=>document.getElementById(id);
 const FALLBACK_AVATAR="/workstudio/assets/default-agent.png.png";
 let registry={teams:{},agents:{}};
 let roster=[],sessions=[],selection=null,teamFilter="all",source=null;
-let drawerMode=null, previousFocus=null;
-function openDrawer(mode){
- drawerMode=mode;
- previousFocus=document.activeElement;
- const titles={agent:["AGENT","角色資訊"],teams:["TEAM","團隊概況"],sessions:["ACTIVITY","最近工作階段"]};
- const [eyebrow,title]=titles[mode]||titles.agent;
- el("drawerEyebrow").textContent=eyebrow;
- el("drawerTitle").textContent=title;
- el("drawerAgent").hidden=mode!=="agent";
- el("drawerTeams").hidden=mode!=="teams";
- el("drawerSessions").hidden=mode!=="sessions";
- el("studioDrawer").hidden=false;
- el("drawerBackdrop").hidden=false;
- document.body.classList.add("drawer-open");
- el("closeDrawer").focus();
+let activeView="workroom";
+const decisionDefault="目前尚未連接可驗證的待決策資料來源；不顯示模擬事項。";
+function toggleMobilePanel(open){
+ const sidebar=el("studioSidebar"),backdrop=el("mobileBackdrop");
+ sidebar.classList.toggle("mobile-open",open);
+ backdrop.hidden=!open;
+ document.body.classList.toggle("mobile-panel-open",open);
 }
-function closeDrawer(){
- drawerMode=null;el("studioDrawer").hidden=true;el("drawerBackdrop").hidden=true;
- document.body.classList.remove("drawer-open");
- if(previousFocus?.isConnected)previousFocus.focus();
- previousFocus=null;
-}
-function initDrawers(){
- el("openTeams").addEventListener("click",()=>openDrawer("teams"));
- el("openSessions").addEventListener("click",()=>openDrawer("sessions"));
- el("closeDrawer").addEventListener("click",closeDrawer);
- el("drawerBackdrop").addEventListener("click",closeDrawer);
- window.addEventListener("keydown",event=>{
-  if(drawerMode&&event.key==="Escape"){event.preventDefault();closeDrawer();}
-  if(drawerMode&&event.key==="Tab"){
-   const focusables=[...el("studioDrawer").querySelectorAll('button:not([disabled]),a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(node=>node.getClientRects().length>0);
-   const first=focusables[0],last=focusables[focusables.length-1];
-   if(!first)return;
-   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
-  }
+function setActiveView(view){
+ activeView=view;
+ document.querySelectorAll(".rail-action").forEach(button=>{
+  const current=button.dataset.view===view;
+  button.classList.toggle("active",current);
+  if(current)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current");
  });
 }
-
+function showPanel(view){
+ if(view==="workroom"){setActiveView("workroom");toggleMobilePanel(false);el("worldStage").scrollIntoView({block:"nearest",inline:"nearest"});return;}
+ const target=view==="teams"?"teamPanel":view==="records"?"activityPanel":view==="profile"?"profilePanel":"decisionPanel";
+ setActiveView(view==="profile"?"workroom":view);
+ if(view==="tasks")el("decisionSummary").textContent=decisionDefault;
+ if(view==="settings")el("decisionSummary").textContent="工作室設定介面尚未整合。本頁不會修改 OpenClaw、Gateway 或 Railway 設定。";
+ if(view==="records"){toggleMobilePanel(false);el(target).scrollIntoView({behavior:"instant",block:"nearest"});return;}
+ toggleMobilePanel(true);
+ if(window.matchMedia("(max-width: 780px)").matches)el(target).scrollIntoView({block:"nearest"});
+}
+function openDrawer(mode){showPanel(mode==="agent"?"profile":mode==="sessions"?"records":"teams");}
+function closeDrawer(){toggleMobilePanel(false);}
+function initDrawers(){
+ document.querySelectorAll(".rail-action").forEach(button=>button.addEventListener("click",()=>showPanel(button.dataset.view)));
+ el("openTeams").addEventListener("click",()=>showPanel("teams"));
+ el("openSettings").addEventListener("click",()=>showPanel("settings"));
+ el("mobileBackdrop").addEventListener("click",closeDrawer);
+ el("closeMobilePanel").addEventListener("click",closeDrawer);
+ document.addEventListener("keydown",event=>{if(event.key==="Escape")closeDrawer();});
+}
 function safeAvatar(path){return typeof path==="string" && /^\/workstudio\/assets\/[a-zA-Z0-9_.-]+\.(png|webp|jpg|jpeg|svg)$/.test(path)?path:FALLBACK_AVATAR;}
 function mk(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
 /* Default avatars are static character illustrations. Explicit registry.avatar paths override them. */
