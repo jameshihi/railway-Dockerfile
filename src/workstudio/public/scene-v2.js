@@ -102,8 +102,18 @@ function actions(){
  $("navChat").onclick=()=>{markNav("navChat");highlight("chatScreen");};
  $("navTasks").onclick=()=>{markNav("navTasks");highlight("decisionScreen");};
  $("navSettings").onclick=()=>{$("sceneHint").textContent="目前尚未開放設定操作，現有系統設定不會被更動。";markNav("navSettings");};
- $("topChat").onclick=()=>highlight("chatScreen");$("topAgent").onclick=()=>highlight("profileScreen");$("topTeam").onclick=()=>highlight("teamScreen");
+
  $("chatRefresh").onclick=shuffleDemo;
+}
+function updateSceneClock(){
+ const node=$("sceneClock");if(!node)return;
+ const date=new Date();
+ const format=new Intl.DateTimeFormat("zh-TW",{
+   timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",
+   hour:"2-digit",minute:"2-digit",hour12:false
+ });
+ node.dateTime=date.toISOString();
+ node.textContent="台灣時間  "+format.format(date).replaceAll("/","-");
 }
 function resize(){
  const v=$("studioViewport"),stage=$("scene"),doc=$("studioDocument");
@@ -114,6 +124,9 @@ function resize(){
 }
 async function start(){
  actions();resize();window.addEventListener("resize",resize);
+ updateSceneClock();
+ window.addEventListener("visibilitychange",()=>{if(!document.hidden)updateSceneClock();});
+ window.setInterval(()=>{if(!document.hidden)updateSceneClock();},60_000);
  try{const r=await fetch("/workstudio/registry.json",{cache:"no-store"});if(r.ok){const data=await r.json();reg={agents:data.agents||{},teams:data.teams||{}};}}catch{ /* errors display as empty roster */ }
  eventStream=new EventSource("/workstudio/api/events");
  eventStream.addEventListener("gateway-state",e=>{
