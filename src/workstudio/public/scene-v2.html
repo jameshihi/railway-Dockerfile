@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI WORKSTUDIO｜場景式工作室</title>
+<link rel="stylesheet" href="/workstudio/scene-v2.css">
+</head>
+<body>
+<div class="studio-viewport" id="studioViewport">
+ <div class="studio-document" id="studioDocument">
+  <main class="scene" id="scene" aria-label="可互動的透視工作室">
+   <img class="scene-art" src="/workstudio/scene-v2-art.svg" alt="帶透視感的木質像素工作室，有辦公桌、電腦、植栽、窗戶與休息區。"/>
+   <header class="scene-title scene-physical" aria-label="工作室招牌">
+      <span class="scene-paw" aria-hidden="true">✦</span>
+      <div><span class="overline">OPENCLAW MULTI-AGENT STUDIO</span><h1>AI WORKSTUDIO</h1></div>
+   </header>
+   <nav class="control-station scene-physical" aria-label="工作室操作控制台">
+      <button class="station-btn selected" id="navHome" type="button" aria-label="工作室" title="工作室">⌂<small>工作室</small></button>
+      <button class="station-btn" id="navTeam" type="button" aria-label="團隊概況" title="團隊概況">♧<small>團隊</small></button>
+      <button class="station-btn" id="navChat" type="button" aria-label="Agent 聊天室" title="聊天室">☷<small>聊天室</small></button>
+      <button class="station-btn" id="navTasks" type="button" aria-label="需要你決定" title="需要你決定">▣<small>任務</small></button>
+      <button class="station-btn" id="navSettings" type="button" aria-label="工作室設定" title="設定">⚙<small>設定</small></button>
+   </nav>
+   <div class="system-station scene-physical">
+      <span class="online-chip" id="connection">連線中</span>
+      <button id="topChat" type="button">Agent 聊天室</button>
+      <button id="topAgent" type="button">角色資訊</button>
+      <button id="topTeam" type="button">團隊概況</button>
+   </div>
+   <div class="team-plaque design-plaque scene-physical">設計行銷團隊 <small>DESIGN & MARKETING</small></div>
+   <div class="team-plaque finance-plaque scene-physical">娃娃機財務團隊 <small>CLAW MACHINE FINANCE</small></div>
+   <section class="scene-people" id="scenePeople" aria-label="Agent 人物與工位"></section>
+   <section class="game-screen profile-screen scene-physical" id="profileScreen" aria-label="角色資訊看板">
+      <h2><span aria-hidden="true">✦</span> 角色資訊</h2>
+      <div class="profile-body" id="profileBody"><p class="notice">選取辦公室中的 Agent 人物。</p></div>
+   </section>
+   <section class="game-screen team-screen scene-physical" id="teamScreen" aria-label="團隊公告板">
+      <h2><span aria-hidden="true">♧</span> 團隊概況</h2>
+      <div id="teamBoard" class="team-board"><p class="notice">正在取得團隊資料…</p></div>
+   </section>
+   <section class="game-screen decision-screen scene-physical" id="decisionScreen" aria-label="待決策資訊">
+      <h2><span aria-hidden="true">?</span> 需要你決定</h2>
+      <p id="decisionText" class="notice">目前未連接待決策資料來源，暫不顯示示範待辦。</p>
+   </section>
+   <section class="chat-screen scene-physical" id="chatScreen" aria-label="Agent 展示聊天室">
+      <header class="chat-heading"><h2>☏ Agent 聊天室</h2><span class="demo-pill">展示對話 · 非真實發言</span></header>
+      <div id="demoChat" class="chat-feed"><p class="notice">正在取得 Agent 名單…</p></div>
+      <button id="chatRefresh" class="chat-refresh" type="button">換一批展示對話</button>
+   </section>
+   <div class="scene-hint scene-physical" id="sceneHint">點選人物可查看 Agent 真實資料</div>
+  </main>
+ </div>
+</div>
+<script src="/workstudio/scene-v2.js" defer></script>
+</body>
+</html>
