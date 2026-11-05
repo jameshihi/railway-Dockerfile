@@ -1,0 +1,58 @@
+/* Workstudio scene integration. Visible frames are part of scene-v2-art.svg:
+   the HTML here provides the live text and click targets INSIDE those devices. */
+.scene-title{
+ left:57px;top:49px;width:462px;height:83px;
+ padding:5px 11px;gap:12px;
+ background:none;border:0;border-radius:0;box-shadow:none;clip-path:none;
+}
+.scene-title .scene-paw{
+ width:60px;height:60px;border:0;border-radius:4px;background:transparent;box-shadow:none;
+ color:#ffd89d;font-size:40px;text-shadow:0 0 9px #db9e5e;
+}
+.scene-title h1{font-size:30px;color:#ffe6b7;text-shadow:0 2px #483129;margin:1px 0 0}
+.scene-title .overline{color:#d6b794;font-size:10px}
+.system-station{
+ left:873px;top:48px;width:636px;height:58px;
+ padding:0;display:flex;align-items:stretch;gap:0;
+ background:transparent;border:0;border-radius:0;box-shadow:none;
+}
+.system-station .online-chip,
+.system-station .scene-clock{
+ display:flex;align-items:center;justify-content:center;
+ min-width:0;background:transparent;border:0;box-shadow:none;
+ white-space:nowrap;color:#ffedd1;font-weight:850;letter-spacing:.015em;
+}
+.system-station .online-chip{
+ flex:0 0 225px;color:#e7ca9f;font-size:16px;border-right:0;
+}
+.system-station .online-chip.online{color:#87f0b1;background:transparent}
+.system-station .online-chip.error{color:#ffa6a1}
+.scene-clock{flex:1;font-size:17px;color:#f2d7af;font-variant-numeric:tabular-nums}
+.control-station{
+ left:44px;top:209px;width:72px;height:397px;min-height:0;
+ padding:0;gap:4px;display:flex;flex-direction:column;
+ border:0;border-radius:0;background:transparent;box-shadow:none;
+}
+.station-btn{
+ min-height:74px;height:74px;max-height:74px;flex:0 0 74px;
+ display:flex;align-items:center;justify-content:center;flex-direction:column;
+ color:#b8c8cf;border:0;border-radius:2px;
+ background:transparent;box-shadow:none;padding:4px 0;
+ font-size:25px;gap:4px;
+}
+.station-btn small{font-size:10px;font-weight:850}
+.station-btn.selected,.station-btn:hover{
+ color:#adfff0;background:#2c8a8547;box-shadow:inset 0 0 0 2px #62b5a36b;
+}
+.team-plaque{
+ top:217px;height:34px;
+ background:transparent;border:0;box-shadow:none;border-radius:0;
+ display:flex;flex-direction:row;align-items:center;justify-content:center;
+ gap:12px;font-size:18px;letter-spacing:.02em;
+ color:#ffdfaa;text-shadow:1px 2px 0 #422b25;
+ padding:0;
+}
+.team-plaque small{font-size:10px;color:#c3dad1;margin:0;letter-spacing:.04em}
+.design-plaque{left:195px;width:493px}
+.finance-plaque{left:935px;width:267px;font-size:17px;gap:6px}
+.finance-plaque small{font-size:9px}
