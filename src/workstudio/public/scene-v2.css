@@ -1,0 +1,77 @@
+:root{font-family:"Trebuchet MS","Noto Sans TC",system-ui,sans-serif;color:#ffebd0;background:#211a20;font-synthesis:none}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #a7f6ea;outline-offset:3px}
+.studio-viewport{width:100vw;height:100dvh;overflow:auto;overscroll-behavior:contain;background:radial-gradient(ellipse at 50% 40%,#634234,#1e1a21 78%);scrollbar-color:#bd8b61 #32272a}
+.studio-document{width:1600px;height:980px;position:relative;overflow:visible}
+.scene{position:absolute;top:0;left:0;width:1600px;height:980px;isolation:isolate;transform-origin:top left}
+.scene-art{display:block;position:absolute;inset:0;width:1600px;height:980px;pointer-events:none;user-select:none}
+.scene-physical{position:absolute;z-index:3}
+.scene-title{left:40px;top:30px;width:492px;height:103px;display:flex;align-items:center;gap:12px;padding:16px 22px;background:linear-gradient(160deg,#694330,#223244 35%,#142339 75%,#774a35);border:7px ridge #dea769;box-shadow:inset 0 0 0 3px #32232b,0 7px 0 #4b302a,0 11px 17px #130d17ad;border-radius:7px;clip-path:polygon(0 0,95% 0,100% 19%,100% 81%,95% 100%,0 100%)}
+.scene-title .scene-paw{width:56px;height:56px;display:grid;place-items:center;border-radius:12px;background:#b66e3b;border:3px solid #ffcc81;color:#fff7d7;font-size:38px;flex-shrink:0}
+.scene-title h1{font-weight:1000;font-size:30px;letter-spacing:.015em;margin:2px 0 0;color:#fff4d4;text-shadow:2px 3px #54352c}
+.overline{color:#f3c896;font-size:10px;letter-spacing:.17em;font-weight:850}
+.system-station{top:39px;left:849px;width:681px;height:72px;display:flex;align-items:stretch;padding:5px;border:6px ridge #d5a06b;border-radius:7px;background:#162539;box-shadow:0 6px 0 #513229,0 10px 14px #150f16ba;z-index:4}
+.system-station button,.online-chip{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;border:0;border-right:1px solid #876d59;background:linear-gradient(#2b3d4d,#16263b);color:#fff2db;font-size:13px;font-weight:850;white-space:nowrap}
+.system-station button:hover{background:#365464}
+.system-station button:last-child{border-right:0}
+.online-chip{flex:0 0 106px;color:#ffe1a3}
+.online-chip.online{color:#8cf0a8;background:#244238}
+.online-chip.error{color:#ffa99a}
+.control-station{left:29px;top:184px;width:84px;min-height:422px;border:6px ridge #d4a16a;border-radius:12px;background:#16263b;box-shadow:inset 0 0 0 3px #564038,0 7px 0 #503529,0 10px 17px #130d1db5;display:flex;flex-direction:column;padding:9px 5px;gap:4px}
+.station-btn{border:0;border-bottom:1px solid #7d5d45;min-height:73px;background:transparent;color:#c6d7de;font-size:28px;font-weight:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:3px}
+.station-btn small{font-size:12px;color:inherit}
+.station-btn.selected,.station-btn:hover{background:#205a61;color:#a8ffea;box-shadow:inset 0 0 0 2px #679fa2}
+.team-plaque{display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(180deg,#673e2f,#1a2c3c 40%,#1a2638 75%,#57392d);border:5px ridge #e3ad69;border-radius:7px;box-shadow:0 6px 0 #573626,0 10px 16px #110e1a9c;font-size:20px;color:#ffe1ae;font-weight:900;text-shadow:1px 2px #563222}
+.team-plaque small{font-size:10px;color:#f2c997;margin-top:3px}
+.design-plaque{left:187px;top:214px;width:473px;height:65px}
+.finance-plaque{left:907px;top:213px;width:283px;height:65px;font-size:18px}
+.scene-people{position:absolute;inset:0;z-index:5;pointer-events:none}
+.character{position:absolute;width:108px;min-height:116px;transform:translate(-50%,-58%);pointer-events:auto;background:transparent;border:0;padding:0;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.character-art{width:72px;height:79px;display:block;filter:drop-shadow(3px 4px 0 #261b24a8);image-rendering:pixelated}
+.character-art svg{width:100%;height:100%}
+.character-art img{width:100%;height:100%;object-fit:contain}
+.character-name{display:block;max-width:118px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 8px;margin-top:-5px;background:#1a2536;border:3px ridge #e1aa6b;border-radius:4px;color:#fff6d9;font-size:12px;font-weight:900;text-shadow:1px 1px #2e2a32;box-shadow:2px 3px 0 #3d2b2c;position:relative}
+.character-status{font-size:10px;color:#d7f1de;padding:2px 7px;background:#24333bd9;border-radius:0 0 4px 4px}
+.character-status::before{content:"";display:inline-block;height:6px;width:6px;margin-right:5px;border-radius:50%;background:#a1a9ae}
+.character[data-state="working"] .character-status::before{background:#76efb9}
+.character[data-state="error"] .character-status::before{background:#ff8b80}
+.character.is-selected .character-name,.character:hover .character-name{border-color:#baf5c4;background:#29584c}
+.character:focus-visible{outline:3px solid #fff2aa;outline-offset:2px}
+.character-coordinator::after{content:"主控";position:absolute;top:0;right:0;background:#c39248;border:2px solid #ffda96;color:#2f2225;border-radius:3px;font-weight:900;font-size:10px;padding:1px 4px}
+.game-screen{background:linear-gradient(160deg,#1b2b41,#101b2f);border:8px ridge #d8a16a;border-radius:8px;box-shadow:inset 0 0 0 3px #44312e,0 8px 0 #4b3028,0 12px 18px #130d16a9;color:#f7e5c6;overflow:hidden}
+.game-screen h2{display:flex;align-items:center;gap:8px;margin:0;padding:9px 12px;background:linear-gradient(#5b382c,#2a303a);border-bottom:3px solid #ad7b50;color:#ffe0a4;font-size:16px;line-height:1.25}
+.game-screen h2 span{color:#ffd381}
+.profile-screen{left:1262px;top:141px;width:313px;height:277px}
+.profile-body{padding:9px 11px;font-size:12px}
+.profile-identity{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.profile-image{width:48px;height:53px;object-fit:contain;flex:none}
+.profile-image svg{height:100%;width:100%}
+.profile-name{font-size:20px;font-weight:900}
+.profile-role{font-size:10px;color:#f7c87a}
+.profile-meta{display:grid;grid-template-columns:65px minmax(0,1fr);gap:5px 5px;margin:8px 0;font-size:10px;line-height:1.5}
+.profile-meta dt{color:#a6bed0}.profile-meta dd{margin:0;overflow-wrap:anywhere;color:#fff3d8}
+.profile-state{color:#b7ebc7;font-size:11px;font-weight:800}
+.team-screen{left:1262px;top:430px;width:313px;height:228px}
+.team-board{padding:6px 11px 9px;font-size:12px}
+.team-group{border-bottom:1px solid #60717c55;padding:9px 0}
+.team-group:last-child{border-bottom:0}
+.team-group strong{display:block;color:#ffe6bc;font-size:12px}
+.team-group small{color:#adccce;font-size:10px}
+.team-group .members{color:#a9e6d5;font-size:11px;line-height:1.5;overflow-wrap:anywhere;margin-top:4px}
+.decision-screen{left:1262px;top:675px;width:313px;height:205px}
+.decision-screen .notice{padding:11px 13px}
+.notice{font-size:12px;line-height:1.65;color:#c6d2d6;margin:0}
+.chat-screen{position:absolute;z-index:6;left:473px;top:795px;width:705px;height:157px;padding:13px 17px;background:#142238;border:8px ridge #d4a16b;border-radius:7px;box-shadow:inset 0 0 0 3px #4c3529,0 9px 0 #543629,0 14px 18px #191116a8}
+.chat-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #76818a;padding-bottom:5px}
+.chat-heading h2{font-size:18px;color:#ffe1ae;margin:0}
+.demo-pill{font-size:10px;border:1px solid #967b59;color:#f5cda1;padding:3px 6px;border-radius:4px}
+.chat-feed{height:73px;overflow-y:auto;scrollbar-color:#8a7255 #18283a;padding:3px 0}
+.chat-line{display:grid;grid-template-columns:99px minmax(0,1fr);align-items:baseline;gap:7px;border-bottom:1px solid #50627653;padding:4px 0;font-size:11px}
+.chat-line b{color:#a8d8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-line span{color:#f6e5c8;overflow-wrap:anywhere}
+.chat-refresh{display:block;margin:5px 0 0 auto;padding:3px 8px;border:1px solid #af8c59;border-radius:4px;background:#273a4d;color:#ffe7be;font-size:10px}
+.chat-refresh:hover{background:#38546a}
+.scene-hint{left:128px;top:925px;width:313px;background:#17283bc9;padding:9px;border:2px ridge #cc9662;border-radius:4px;font-size:11px;text-align:center}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
