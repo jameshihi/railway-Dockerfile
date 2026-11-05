@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI WORKSTUDIO｜場景式工作室</title>
 <link rel="stylesheet" href="/workstudio/scene-v2.css">
+<link rel="stylesheet" href="/workstudio/scene-integrated.css">
 </head>
 <body>
 <div class="studio-viewport" id="studioViewport">
@@ -22,11 +23,9 @@
       <button class="station-btn" id="navTasks" type="button" aria-label="需要你決定" title="需要你決定">▣<small>任務</small></button>
       <button class="station-btn" id="navSettings" type="button" aria-label="工作室設定" title="設定">⚙<small>設定</small></button>
    </nav>
-   <div class="system-station scene-physical">
-      <span class="online-chip" id="connection">連線中</span>
-      <button id="topChat" type="button">Agent 聊天室</button>
-      <button id="topAgent" type="button">角色資訊</button>
-      <button id="topTeam" type="button">團隊概況</button>
+   <div class="system-station scene-physical" aria-label="工作室系統狀態">
+      <span class="online-chip" id="connection" role="status">連線中</span>
+      <time class="scene-clock" id="sceneClock" aria-label="台灣時間">台灣時間 · 讀取中</time>
    </div>
    <div class="team-plaque design-plaque scene-physical">設計行銷團隊 <small>DESIGN & MARKETING</small></div>
    <div class="team-plaque finance-plaque scene-physical">娃娃機財務團隊 <small>CLAW MACHINE FINANCE</small></div>
